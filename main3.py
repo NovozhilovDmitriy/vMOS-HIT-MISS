@@ -18,8 +18,6 @@ for z in file:
     print('Total rows = ',y,end='')
     end_time = datetime.now()
     print('      Duration: {}'.format(end_time - start_time), end='')
-    time.sleep(1)
-
 def type_cache (i,j):
     """Function for count request percentage of VOD/Live/CU and HIT/MISS percentage of this types"""
     global v; global l; global t; global hv; global mv; global hl; global ml; global ht; global mt
@@ -42,7 +40,6 @@ def type_cache (i,j):
          elif j.find('servicetype=3') != -1 and i.endswith('MISS'):
                 t += 1
                 mt += 1
-
 def hls_dash (j):
     """Function for count request percentage of HLS/DASH for VOD/Live/CU"""
     global hls_v; global dash_v; global hls_l; global dash_l; global hls_c; global dash_c
@@ -89,11 +86,11 @@ if __name__ == '__main__':
                 hls_dash(hcs[10:11]);
                 hls_dash_chunk(hcs[10:11]);
 
-                print('\r',end='')
-                print('Processed/Total ',x,'/',y,end='')
-                end_time=datetime.now()
-                print('      Duration: {}'.format(end_time - start_time),end='')
-                #time.sleep(.1)
+                #if x > x+100:
+                    print('\r',end='')
+                    print('Processed/Total ',x,'/',y,end='')
+                    end_time=datetime.now()
+                    print('      Duration: {}'.format(end_time - start_time),end='')
 
 print()
 print()
