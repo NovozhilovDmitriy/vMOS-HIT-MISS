@@ -4,7 +4,7 @@ import os
 from multiprocessing import Process, Queue
 from datetime import datetime
 
-v = 0;l = 0;t = 0
+vod = 0;live = 0;cuts = 0
 
 start_time=datetime.now()
 
@@ -12,14 +12,14 @@ file = sys.argv[1:]
 
 def test(j):
     """Function for count request percentage of VOD/Live/CU and HIT/MISS percentage of this types"""
-    global v; global l; global t
+    global vod; global live; global cuts
     for j in j:
          # if j.find('MISS') != -1:
-         #     v+=1
+         #     vod+=1
          # elif j.find('HIT') != -1:
-         #     l += 1
+         #     live += 1
          # elif j.find('servicetype=3') != -1:
-         #      t += 1
+         #      cuts += 1
          print(j)
 
 def argument(m):
@@ -47,5 +47,5 @@ if __name__ == '__main__':
     # print()
     # print('1.   % between VOD/LIVE/CU  (all requests)')
     # print()
-    # print('%14s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('VOD =',(v/(l+v+t)*100),'%','Live =',(l/(l+v+t)*100),'%','CU =',(t/(l+v+t)*100),'%'))
+    # print('%14s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('VOD =',(vod/(live+vod+cuts)*100),'%','Live =',(live/(live+vod+cuts)*100),'%','CU =',(cuts/(live+vod+cuts)*100),'%'))
     # print()
