@@ -16,6 +16,7 @@ cur_row = 0; total_rows = 0
 hlsv7_vod = 0; dash_vod = 0; hlsv7_live = 0; dash_live = 0; hlsv7_cuts = 0; dash_cuts = 0
 sec_hlsv7_vod = 0; sec_dash_vod = 0; sec_hlsv7_live = 0; sec_dash_live = 0; sec_hlsv7_cuts = 0; sec_dash_cuts = 0
 hlsv3_cuts = 0; hlsv3_vod = 0; sec_hlsv3_cuts = 0; sec_hlsv3_vod = 0;
+sec_hlsv3_cuts_hit = 0 ; sec_hlsv3_cuts_miss = 0 ; sec_hlsv3_vod_hit = 0 ; sec_hlsv3_vod_miss = 0
 
 file = sys.argv[1:] #Import arguments like files for next processing#
 
@@ -81,17 +82,26 @@ def hlsv7_dash (j):
                 dash_cuts += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_dash_cuts += 1
-def hlsv3 (j):
+def hlsv3 (i,j):
     """Function for count request percentage of VOD/Live/CU for HLSv3"""
-    global hlsv3_cuts; global hlsv3_vod;global sec_hlsv3_cuts; global sec_hlsv3_vod;
-    for j in j:
+    global hlsv3_cuts; global hlsv3_vod;global sec_hlsv3_cuts; global sec_hlsv3_vod
+    global sec_hlsv3_cuts_hit; global sec_hlsv3_cuts_miss; global sec_hlsv3_vod_hit; global sec_hlsv3_vod_miss
+    for i, j in zip(i, j):
         if j.find('.hls.ts') != -1:
             if j.find('TVOD') != -1:
                 hlsv3_cuts += 1
                 sec_hlsv3_cuts += 3
+                if i.endswith('HIT'):
+                    sec_hlsv3_cuts_hit += 1
+                else:
+                    sec_hlsv3_cuts_miss += 1
             else:
                 hlsv3_vod += 1
                 sec_hlsv3_vod += 3
+                if i.endswith('HIT'):
+                    sec_hlsv3_vod_hit += 1
+                else:
+                    sec_hlsv3_vod_miss += 1
 
 if __name__ == '__main__': #Main processing#
     for m in file:
@@ -101,7 +111,7 @@ if __name__ == '__main__': #Main processing#
                cur_row+=1
                type_cache(hcs[3:4],hcs[10:11]);
                hlsv7_dash(hcs[10:11]);
-               hlsv3(hcs[10:11]);
+               hlsv3(hcs[3:4],hcs[10:11]);
                end_time = datetime.now()
                if cur_row % 12345 == 0: #print pregress bar#
                    end_time = datetime.now()
