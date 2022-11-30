@@ -5,19 +5,23 @@ import csv
 import os
 import time
 from datetime import datetime
+
 start_time=datetime.now()
+
 v = 0;l = 0;t = 0;hv = 0;mv = 0;hl = 0;ml = 0;ht = 0;mt = 0
 x = 0;y = 0
 hls_v=0;dash_v=0;hls_l=0;dash_l=0;hls_c=0;dash_c=0
 s_hls_v=0;s_dash_v=0;s_hls_l=0;s_dash_l=0;s_hls_c=0;s_dash_c=0
 
-file = sys.argv[1:]
-for z in file:
+file = sys.argv[1:] #Import arguments like files for next processing#
+
+for z in file: #Counting how many rows totaly we will have for this process#
     y = y+ sum(1 for file in open(os.getcwd()+'\/'+z,'r'))
     print('\r',end='')
     print('Total rows = ',y,end='')
     end_time = datetime.now()
     print('      Duration: {}'.format(end_time - start_time), end='')
+
 def type_cache (i,j):
     """Function for count request percentage of VOD/Live/CU and HIT/MISS percentage of this types"""
     global v; global l; global t; global hv; global mv; global hl; global ml; global ht; global mt
@@ -44,7 +48,6 @@ def type_cache (i,j):
                 t += 1
                 mt += 1
 def hls_dash (j):
-    """Function for count request percentage of HLS/DASH for VOD/Live/CU"""
     """Function for count request percentage of HLS/DASH for VOD/Live/CU"""
     global hls_v; global dash_v; global hls_l; global dash_l; global hls_c; global dash_c
     global s_hls_v; global s_dash_v; global s_hls_l; global s_dash_l; global s_hls_c; global s_dash_c
@@ -77,19 +80,29 @@ def hls_dash (j):
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     s_dash_c += 1
 
-if __name__ == '__main__':
+# def print_progress_bar(index, total, label):
+#     """Function for show progress bar"""
+#     n_bar = 10  # Progress bar width
+#     progress = index / total
+#     sys.stdout.write('\r')
+#     sys.stdout.write(f"[{'=' * int(n_bar * progress):{n_bar}s}] {int(100 * progress)}%  {label}")
+#     sys.stdout.flush()
+
+if __name__ == '__main__': #Main processing#
     for m in file:
         with open(os.getcwd()+'\/'+m, newline='') as hcs_1:
            hcs_2 = csv.reader(hcs_1, delimiter=' ')
            for hcs in hcs_2:
-                x+=1
-                type_cache(hcs[3:4],hcs[10:11]);
-                hls_dash(hcs[10:11]);
-                if x % 12345 == 0:
-                    print('\r',end='')
-                    print('Processed/Total ',x,'/',y,end='')
-                    end_time=datetime.now()
-                    print('      Duration: {}'.format(end_time - start_time),end='')
+               x+=1
+               type_cache(hcs[3:4],hcs[10:11]);
+               hls_dash(hcs[10:11]);
+               end_time = datetime.now()
+               #print_progress_bar(x,y, "Total rows = ")
+               #print( y, '      Duration: {}'.format(end_time - start_time), end='')
+               if x % 12345 == 0:
+                   end_time = datetime.now()
+                   print('\r', end='')
+                   print('Processed/Total ', x, '/', y,'      Duration: {}'.format(end_time - start_time), end='')
 
 print()
 print()
