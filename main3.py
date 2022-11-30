@@ -45,42 +45,37 @@ def type_cache (i,j):
                 mt += 1
 def hls_dash (j):
     """Function for count request percentage of HLS/DASH for VOD/Live/CU"""
-    global hls_v; global dash_v; global hls_l; global dash_l; global hls_c; global dash_c
-    for j in j:
-        if j.find('servicetype=0') != -1 :
-            if j.find('PolicyMode') != -1:
-                hls_v += 1
-            else:
-                dash_v += 1
-        elif j.find('servicetype=1') != -1 :
-            if j.find('PolicyMode') != -1:
-                hls_l += 1
-            else:
-                dash_l += 1
-        elif j.find('servicetype=3') != -1 :
-            if j.find('PolicyMode') != -1:
-                hls_c += 1
-            else:
-                dash_c += 1
-def hls_dash_chunk (j):
     """Function for count request percentage of HLS/DASH for VOD/Live/CU"""
+    global hls_v; global dash_v; global hls_l; global dash_l; global hls_c; global dash_c
     global s_hls_v; global s_dash_v; global s_hls_l; global s_dash_l; global s_hls_c; global s_dash_c
     for j in j:
-        if (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=0') != -1:
+        if j.find('servicetype=0') != -1:
             if j.find('PolicyMode') != -1:
-                s_hls_v += 3
+                hls_v += 1
+                if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
+                    s_hls_v += 3
             else:
-                s_dash_v += 1
-        elif (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=1') != -1:
+                dash_v += 1
+                if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
+                    s_dash_v += 1
+        elif j.find('servicetype=1') != -1:
             if j.find('PolicyMode') != -1:
-                s_hls_l += 3
+                hls_l += 1
+                if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
+                    s_hls_l += 3
             else:
-                s_dash_l += 1
-        elif (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=3') != -1:
+                dash_l += 1
+                if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
+                    s_dash_l += 1
+        elif j.find('servicetype=3') != -1:
             if j.find('PolicyMode') != -1:
-                s_hls_c += 3
+                hls_c += 1
+                if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
+                    s_hls_c += 3
             else:
-                s_dash_c += 1
+                dash_c += 1
+                if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
+                    s_dash_c += 1
 
 if __name__ == '__main__':
     for m in file:
@@ -90,7 +85,6 @@ if __name__ == '__main__':
                 x+=1
                 type_cache(hcs[3:4],hcs[10:11]);
                 hls_dash(hcs[10:11]);
-                hls_dash_chunk(hcs[10:11]);
                 if x % 12345 == 0:
                     print('\r',end='')
                     print('Processed/Total ',x,'/',y,end='')
