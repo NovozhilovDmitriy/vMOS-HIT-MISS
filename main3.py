@@ -4,6 +4,7 @@ import sys
 import csv
 import os
 import time
+import re
 from datetime import datetime
 
 start_time=datetime.now()
@@ -40,7 +41,7 @@ def type_cache (i,j):
             else:
                 l += 1
                 ml += 1
-        elif j.find('servicetype=3') != -1:
+        elif j.find('servicetype=3') != -1 or j.find('servicetype=2'):
             if i.endswith('HIT'):
                 t += 1
                 ht += 1
@@ -70,7 +71,7 @@ def hls_dash (j):
                 dash_l += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     s_dash_l += 1
-        elif j.find('servicetype=3') != -1:
+        elif j.find('servicetype=3') != -1 or j.find('servicetype=2'):
             if j.find('PolicyMode') != -1:
                 hls_c += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
@@ -117,11 +118,11 @@ print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =',(mv/(hv
 print()
 print('3.  % between HLS/Dash of VOD/LIVE/CU  (all requests)')
 print()
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLS','VOD =',(hls_v/(hls_v+dash_v)*100),'%','Live =',(hls_l/(hls_l+dash_l)*100),'%','CU =',(hls_c/(hls_c+dash_c)*100),'%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLSv7','VOD =',(hls_v/(hls_v+dash_v)*100),'%','Live =',(hls_l/(hls_l+dash_l)*100),'%','CU =',(hls_c/(hls_c+dash_c)*100),'%'))
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('DASH','VOD =',(dash_v/(hls_v+dash_v)*100),'%','Live =',(dash_l/(hls_l+dash_l)*100),'%','CU =',(dash_c/(hls_c+dash_c)*100),'%'))
 print()
 print('4.  % of PlayBack Duration. (HLS chunk = 6sec, Dash chunk=2sec) between HLS/Dash of VOD/LIVE/CU  (only m4v|m4a requests)')
 print()
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLS','VOD =',(s_hls_v/(s_hls_v+s_dash_v)*100),'%','Live =',(s_hls_l/(s_hls_l+s_dash_l)*100),'%','CU =',(s_hls_c/(s_hls_c+s_dash_c)*100),'%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLSv7','VOD =',(s_hls_v/(s_hls_v+s_dash_v)*100),'%','Live =',(s_hls_l/(s_hls_l+s_dash_l)*100),'%','CU =',(s_hls_c/(s_hls_c+s_dash_c)*100),'%'))
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('DASH','VOD =',(s_dash_v/(s_hls_v+s_dash_v)*100),'%','Live =',(s_dash_l/(s_hls_l+s_dash_l)*100),'%','CU =',(s_dash_c/(s_hls_c+s_dash_c)*100),'%'))
 print()
