@@ -22,58 +22,65 @@ def type_cache (i,j):
     """Function for count request percentage of VOD/Live/CU and HIT/MISS percentage of this types"""
     global v; global l; global t; global hv; global mv; global hl; global ml; global ht; global mt
     for i, j in zip(i, j):
-         if j.find('servicetype=0') != -1 and i.endswith('HIT'):
+        if j.find('servicetype=0') != -1:
+            if i.endswith('HIT'):
                 v += 1
                 hv += 1
-         elif j.find('servicetype=0') != -1 and i.endswith('MISS'):
+            else:
                 v += 1
                 mv += 1
-         elif j.find('servicetype=1') != -1 and i.endswith('HIT'):
+        elif j.find('servicetype=1') != -1:
+            if i.endswith('HIT'):
                 l += 1
                 hl += 1
-         elif j.find('servicetype=1') != -1 and i.endswith('MISS'):
+            else:
                 l += 1
                 ml += 1
-         elif j.find('servicetype=3') != -1 and i.endswith('HIT'):
+        elif j.find('servicetype=3') != -1:
+            if i.endswith('HIT'):
                 t += 1
                 ht += 1
-         elif j.find('servicetype=3') != -1 and i.endswith('MISS'):
+            else:
                 t += 1
                 mt += 1
 def hls_dash (j):
     """Function for count request percentage of HLS/DASH for VOD/Live/CU"""
     global hls_v; global dash_v; global hls_l; global dash_l; global hls_c; global dash_c
     for j in j:
-        if j.find('servicetype=0') != -1 and j.find('PolicyMode') != -1:
-            hls_v += 1
-        elif j.find('servicetype=0') != -1 and j.find('PolicyMode') == -1:
-            dash_v += 1
-        elif j.find('servicetype=1') != -1 and j.find('PolicyMode') != -1:
-            hls_l += 1
-        elif j.find('servicetype=1') != -1 and j.find('PolicyMode') == -1:
-            dash_l += 1
-        elif j.find('servicetype=3') != -1 and j.find('PolicyMode') != -1:
-            hls_c += 1
-        elif j.find('servicetype=3') != -1 and j.find('PolicyMode') == -1:
-            dash_c += 1
-
+        if j.find('servicetype=0') != -1 :
+            if j.find('PolicyMode') != -1:
+                hls_v += 1
+            else:
+                dash_v += 1
+        elif j.find('servicetype=1') != -1 :
+            if j.find('PolicyMode') != -1:
+                hls_l += 1
+            else:
+                dash_l += 1
+        elif j.find('servicetype=3') != -1 :
+            if j.find('PolicyMode') != -1:
+                hls_c += 1
+            else:
+                dash_c += 1
 def hls_dash_chunk (j):
     """Function for count request percentage of HLS/DASH for VOD/Live/CU"""
     global s_hls_v; global s_dash_v; global s_hls_l; global s_dash_l; global s_hls_c; global s_dash_c
     for j in j:
-        if (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=0') != -1 and j.find('PolicyMode') != -1:
-            s_hls_v += 3
-        elif (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=0') != -1 and j.find('PolicyMode') == -1:
-            s_dash_v += 1
-        elif (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=1') != -1 and j.find('PolicyMode') != -1:
-            s_hls_l += 3
-        elif (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=1') != -1 and j.find('PolicyMode') == -1:
-            s_dash_l += 1
-        elif (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=3') != -1 and j.find('PolicyMode') != -1:
-            s_hls_c += 3
-        elif (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=3') != -1 and j.find('PolicyMode') == -1:
-            s_dash_c += 1
-
+        if (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=0') != -1:
+            if j.find('PolicyMode') != -1:
+                s_hls_v += 3
+            else:
+                s_dash_v += 1
+        elif (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=1') != -1:
+            if j.find('PolicyMode') != -1:
+                s_hls_l += 3
+            else:
+                s_dash_l += 1
+        elif (j.find('.m4v') != -1 or j.find('.m4a') != -1) and j.find('servicetype=3') != -1:
+            if j.find('PolicyMode') != -1:
+                s_hls_c += 3
+            else:
+                s_dash_c += 1
 
 if __name__ == '__main__':
     for m in file:
@@ -81,12 +88,10 @@ if __name__ == '__main__':
            hcs_2 = csv.reader(hcs_1, delimiter=' ')
            for hcs in hcs_2:
                 x+=1
-
                 type_cache(hcs[3:4],hcs[10:11]);
                 hls_dash(hcs[10:11]);
                 hls_dash_chunk(hcs[10:11]);
-
-                #if x > x+100:
+                if x % 12345 == 0:
                     print('\r',end='')
                     print('Processed/Total ',x,'/',y,end='')
                     end_time=datetime.now()
