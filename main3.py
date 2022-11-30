@@ -5,7 +5,11 @@ import csv
 import os
 import time
 import re
+import locale
+
 from datetime import datetime
+
+locale.setlocale(locale.LC_ALL, "ru_RU.UTF-8")
 
 start_time=datetime.now()
 
@@ -19,9 +23,8 @@ file = sys.argv[1:] #Import arguments like files for next processing#
 for z in file: #Counting how many rows totaly we will have for this process#
     y = y+ sum(1 for file in open(os.getcwd()+'\/'+z,'r'))
     print('\r',end='')
-    print('Total rows = ',y,end='')
     end_time = datetime.now()
-    print('      Duration: {}'.format(end_time - start_time), end='')
+    print('Total rows = ',f'{y:n}','      Duration: {}'.format(end_time - start_time), end='')
 
 def type_cache (i,j):
     """Function for count request percentage of VOD/Live/CU and HIT/MISS percentage of this types"""
@@ -103,7 +106,7 @@ if __name__ == '__main__': #Main processing#
                if x % 12345 == 0:
                    end_time = datetime.now()
                    print('\r', end='')
-                   print('Processed/Total ', x, '/', y,'      Duration: {}'.format(end_time - start_time), end='')
+                   print('Processed/Total ', f'{x:n}', '/', f'{y:n}','      Duration: {}'.format(end_time - start_time), end='')
 
 print()
 print()
