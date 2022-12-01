@@ -24,7 +24,7 @@ for z in file: #Counting how many rows totaly we will have for this process#
     total_rows = total_rows + sum(1 for file in open(os.getcwd() + '\/' + z, 'r'))
     print('\r',end='')
     end_time = datetime.now()
-    print('Total rows = ',f'{total_rows:n}', '      Duration: {}'.format(end_time - start_time), end='')
+    print(f'Total rows = {total_rows:n}      Duration: {end_time - start_time}', end='')
 def type_cache (i,j):
     """Function for count request percentage of VOD/Live/CU and HIT/MISS percentage of this types"""
     global vod; global live; global cuts; global hit_vod; global miss_vod; global hit_live; global miss_live; global hit_cuts; global miss_cuts
@@ -116,8 +116,7 @@ if __name__ == '__main__': #Main processing#
                if cur_row % 12345 == 0: #print pregress bar#
                    end_time = datetime.now()
                    print('\r', end='')
-                   print('Processed/Total ', f'{cur_row:n}', '/', f'{total_rows:n}', '      Duration: {}'.format(end_time - start_time), end='')
-
+                   print(f'Processed/Total = {cur_row:n} / {total_rows:n}      Duration: {end_time - start_time}', end='')
 print()
 print()
 print('1.   % between VOD/LIVE/CU  (all requests)')
