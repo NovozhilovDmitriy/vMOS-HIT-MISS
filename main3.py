@@ -14,9 +14,14 @@ start_time=datetime.now()
 vod = 0; live = 0; cuts = 0; hit_vod = 0; miss_vod = 0; hit_live = 0; miss_live = 0; hit_cuts = 0; miss_cuts = 0
 cur_row = 0; total_rows = 0
 hlsv7_vod = 0; dash_vod = 0; hlsv7_live = 0; dash_live = 0; hlsv7_cuts = 0; dash_cuts = 0
-sec_hlsv7_vod = 0; sec_dash_vod = 0; sec_hlsv7_live = 0; sec_dash_live = 0; sec_hlsv7_cuts = 0; sec_dash_cuts = 0
-hlsv3_cuts = 0; hlsv3_vod = 0; sec_hlsv3_cuts = 0; sec_hlsv3_vod = 0;
+sec_hlsv7_vod = 0; sec_dash_vod = 0; sec_hlsv7_live = 0
+sec_dash_live = 0; sec_hlsv7_cuts = 0; sec_dash_cuts = 0
+hlsv3_cuts = 0; hlsv3_vod = 0; sec_hlsv3_cuts = 0; sec_hlsv3_vod = 0
 sec_hlsv3_cuts_hit = 0 ; sec_hlsv3_cuts_miss = 0 ; sec_hlsv3_vod_hit = 0 ; sec_hlsv3_vod_miss = 0
+sec_hlsv7_vod_hit = 0; sec_dash_vod_hit = 0; sec_hlsv7_live_hit = 0
+sec_hlsv7_vod_miss = 0; sec_dash_vod_miss = 0; sec_hlsv7_live_miss = 0
+sec_dash_live_hit = 0; sec_hlsv7_cuts_hit = 0; sec_dash_cuts_hit = 0
+sec_dash_live_miss = 0; sec_hlsv7_cuts_miss = 0; sec_dash_cuts_miss = 0
 
 file = sys.argv[1:] #Import arguments like files for next processing#
 
@@ -50,38 +55,65 @@ def type_cache (i,j):
             else:
                 cuts += 1
                 miss_cuts += 1
-def hlsv7_dash (j):
+def hlsv7_dash (i,j):
     """Function for count request percentage of HLS/DASH for VOD/Live/CU"""
     global hlsv7_vod; global dash_vod; global hlsv7_live; global dash_live; global hlsv7_cuts; global dash_cuts
     global sec_hlsv7_vod; global sec_dash_vod; global sec_hlsv7_live; global sec_dash_live; global sec_hlsv7_cuts; global sec_dash_cuts
-    for j in j:
+    global sec_hlsv7_vod_hit; global sec_dash_vod_hit; global sec_hlsv7_live_hit; global sec_hlsv7_vod_miss; global sec_dash_vod_miss
+    global sec_hlsv7_live_miss; global sec_dash_live_hit; global sec_hlsv7_cuts_hit; global sec_dash_cuts_hit; global sec_dash_live_miss
+    global sec_hlsv7_cuts_miss; global sec_dash_cuts_miss
+    for i, j in zip(i, j):
         if j.find('servicetype=0') != -1:
             if j.find('PolicyMode') != -1:
                 hlsv7_vod += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_hlsv7_vod += 3
+                    if i.endswith('HIT'):
+                        sec_hlsv7_vod_hit += 1
+                    else:
+                        sec_hlsv7_vod_miss += 1
             else:
                 dash_vod += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_dash_vod += 1
+                    if i.endswith('HIT'):
+                        sec_dash_vod_hit += 1
+                    else:
+                        sec_dash_vod_miss += 1
         elif j.find('servicetype=1') != -1:
             if j.find('PolicyMode') != -1:
                 hlsv7_live += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_hlsv7_live += 3
+                    if i.endswith('HIT'):
+                        sec_hlsv7_live_hit += 1
+                    else:
+                        sec_hlsv7_live_miss += 1
             else:
                 dash_live += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_dash_live += 1
+                    if i.endswith('HIT'):
+                        sec_dash_live_hit += 1
+                    else:
+                        sec_dash_live_miss += 1
         elif j.find('servicetype=3') != -1 or j.find('servicetype=2'):
             if j.find('PolicyMode') != -1:
                 hlsv7_cuts += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_hlsv7_cuts += 3
+                    if i.endswith('HIT'):
+                        sec_hlsv7_cuts_hit += 1
+                    else:
+                        sec_hlsv7_cuts_miss += 1
             else:
                 dash_cuts += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_dash_cuts += 1
+                    if i.endswith('HIT'):
+                        sec_dash_cuts_hit += 1
+                    else:
+                        sec_dash_cuts_miss += 1
 def hlsv3 (i,j):
     """Function for count request percentage of VOD/Live/CU for HLSv3"""
     global hlsv3_cuts; global hlsv3_vod;global sec_hlsv3_cuts; global sec_hlsv3_vod
@@ -110,7 +142,7 @@ if __name__ == '__main__': #Main processing#
            for hcs in hcs_2:
                cur_row+=1
                type_cache(hcs[3:4],hcs[10:11]);
-               hlsv7_dash(hcs[10:11]);
+               hlsv7_dash(hcs[3:4],hcs[10:11]);
                hlsv3(hcs[3:4],hcs[10:11]);
                end_time = datetime.now()
                if cur_row % 12345 == 0: #print pregress bar#
@@ -139,4 +171,18 @@ print()
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLSv3','VOD =', (sec_hlsv3_vod / (sec_hlsv3_vod+sec_hlsv7_vod + sec_dash_vod) * 100), '%', 'Live =', 0, '%', 'CU =', (sec_hlsv3_cuts / (sec_hlsv3_cuts+sec_hlsv7_cuts + sec_dash_cuts) * 100), '%'))
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLSv7','VOD =', (sec_hlsv7_vod / (sec_hlsv3_vod+sec_hlsv7_vod + sec_dash_vod) * 100), '%', 'Live =', (sec_hlsv7_live / (sec_hlsv7_live + sec_dash_live) * 100), '%', 'CU =', (sec_hlsv7_cuts / (sec_hlsv3_cuts+sec_hlsv7_cuts + sec_dash_cuts) * 100), '%'))
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('DASH','VOD =', (sec_dash_vod / (sec_hlsv3_vod+sec_hlsv7_vod + sec_dash_vod) * 100), '%', 'Live =', (sec_dash_live / (sec_hlsv7_live + sec_dash_live) * 100), '%', 'CU =', (sec_dash_cuts / (sec_hlsv3_cuts+sec_hlsv7_cuts + sec_dash_cuts) * 100), '%'))
+print()
+print('4.  % of HIT/MISS for PlayBack Duration. (HLS chunk = 6sec, Dash chunk=2sec) between HLSv7/HLSv3/Dash of VOD/LIVE/CU  (only ts|m4v|m4a requests)')
+print()
+print('%5s' % ('HLSv3'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', (sec_hlsv3_vod_hit / (sec_hlsv3_vod_hit+sec_hlsv3_vod_miss) * 100), '%', 'Live =', 0, '%', 'CU =', (sec_hlsv3_cuts_hit / (sec_hlsv3_cuts_hit+sec_hlsv3_cuts_miss) * 100), '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', (sec_hlsv3_vod_miss / (sec_hlsv3_vod_hit+sec_hlsv3_vod_miss) * 100), '%', 'Live =', 0, '%', 'CU =', (sec_hlsv3_cuts_miss / (sec_hlsv3_cuts_hit+sec_hlsv3_cuts_miss) * 100), '%'))
+print()
+print('%5s' % ('HLSv7'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', (sec_hlsv7_vod_hit / (sec_hlsv7_vod_hit+sec_hlsv7_vod_miss) * 100), '%', 'Live =', (sec_hlsv7_live_hit / (sec_hlsv7_live_hit+sec_hlsv7_live_miss) * 100), '%', 'CU =', (sec_hlsv7_cuts_hit / (sec_hlsv7_cuts_hit+sec_hlsv7_cuts_miss) * 100), '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', (sec_hlsv7_vod_miss / (sec_hlsv7_vod_hit+sec_hlsv7_vod_miss) * 100), '%', 'Live =', (sec_hlsv7_live_miss / (sec_hlsv7_live_hit+sec_hlsv7_live_miss) * 100), '%', 'CU =', (sec_hlsv7_cuts_miss / (sec_hlsv7_cuts_hit+sec_hlsv7_cuts_miss) * 100), '%'))
+print()
+print('%5s' % ('DASH'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', (sec_dash_vod_hit / (sec_dash_vod_hit+sec_dash_vod_miss) * 100), '%', 'Live =', (sec_dash_live_hit / (sec_dash_live_hit+sec_dash_live_miss) * 100), '%', 'CU =', (sec_dash_cuts_hit / (sec_dash_cuts_hit+sec_dash_cuts_miss) * 100), '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', (sec_dash_vod_miss / (sec_dash_vod_hit+sec_dash_vod_miss) * 100), '%', 'Live =', (sec_dash_live_miss / (sec_dash_live_hit+sec_dash_live_miss) * 100), '%', 'CU =', (sec_dash_cuts_miss / (sec_dash_cuts_hit+sec_dash_cuts_miss) * 100), '%'))
 print()
