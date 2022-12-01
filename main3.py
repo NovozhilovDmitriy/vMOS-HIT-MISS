@@ -7,7 +7,7 @@ import time
 import locale
 from datetime import datetime
 
-locale.setlocale(locale.LC_ALL, '')
+#locale.setlocale(locale.LC_ALL, '')
 
 start_time=datetime.now()
 
@@ -29,7 +29,7 @@ for z in file: #Counting how many rows totaly we will have for this process#
     total_rows = total_rows + sum(1 for file in open(os.getcwd() + '\/' + z, 'r'))
     print('\r',end='')
     end_time = datetime.now()
-    print(f'Total rows = {total_rows:n}      Duration: {end_time - start_time}', end='')
+    print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')
 def type_cache (i,j):
     """Function for count request percentage of VOD/Live/CU and HIT/MISS percentage of this types"""
     global vod; global live; global cuts; global hit_vod; global miss_vod; global hit_live; global miss_live; global hit_cuts; global miss_cuts
@@ -137,7 +137,7 @@ def hlsv3 (i,j):
 
 if __name__ == '__main__': #Main processing#
     for m in file:
-        with open(os.getcwd()+'\/'+m, newline='') as hcs_1:
+        with open(os.getcwd()+'\/'+m, encoding='utf-8', newline='') as hcs_1:
            hcs_2 = csv.reader(hcs_1, delimiter=' ')
            for hcs in hcs_2:
                cur_row+=1
@@ -148,7 +148,7 @@ if __name__ == '__main__': #Main processing#
                if cur_row % 12345 == 0: #print pregress bar#
                    end_time = datetime.now()
                    print('\r', end='')
-                   print(f'Processed/Total = {cur_row:n} / {total_rows:n}      Duration: {end_time - start_time}', end='')
+                   print(f'Processed/Total = {cur_row:,} / {total_rows:,}      Duration: {end_time - start_time}', end='')
 print()
 print()
 print('1.   % between VOD/LIVE/CU  (all requests)')
@@ -172,7 +172,7 @@ print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLSv3','VOD =', (sec_
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLSv7','VOD =', (sec_hlsv7_vod / (sec_hlsv3_vod+sec_hlsv7_vod + sec_dash_vod) * 100), '%', 'Live =', (sec_hlsv7_live / (sec_hlsv7_live + sec_dash_live) * 100), '%', 'CU =', (sec_hlsv7_cuts / (sec_hlsv3_cuts+sec_hlsv7_cuts + sec_dash_cuts) * 100), '%'))
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('DASH','VOD =', (sec_dash_vod / (sec_hlsv3_vod+sec_hlsv7_vod + sec_dash_vod) * 100), '%', 'Live =', (sec_dash_live / (sec_hlsv7_live + sec_dash_live) * 100), '%', 'CU =', (sec_dash_cuts / (sec_hlsv3_cuts+sec_hlsv7_cuts + sec_dash_cuts) * 100), '%'))
 print()
-print('4.  % of HIT/MISS for PlayBack Duration. (HLS chunk = 6sec, Dash chunk=2sec) between HLSv7/HLSv3/Dash of VOD/LIVE/CU  (only ts|m4v|m4a requests)')
+print('4.  % of HIT/MISS for HLSv7/HLSv3/Dash of VOD/LIVE/CU  (only ts|m4v|m4a requests)')
 print()
 print('%5s' % ('HLSv3'))
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', (sec_hlsv3_vod_hit / (sec_hlsv3_vod_hit+sec_hlsv3_vod_miss) * 100), '%', 'Live =', 0, '%', 'CU =', (sec_hlsv3_cuts_hit / (sec_hlsv3_cuts_hit+sec_hlsv3_cuts_miss) * 100), '%'))
