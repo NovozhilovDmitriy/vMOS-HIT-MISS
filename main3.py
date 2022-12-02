@@ -7,8 +7,6 @@ import time
 import locale
 from datetime import datetime
 
-#locale.setlocale(locale.LC_ALL, '')
-
 start_time=datetime.now()
 
 vod = 0; live = 0; cuts = 0; hit_vod = 0; miss_vod = 0; hit_live = 0; miss_live = 0; hit_cuts = 0; miss_cuts = 0
@@ -135,30 +133,72 @@ def hlsv3 (i,j):
                 else:
                     sec_hlsv3_vod_miss += 1
 
+def zero_divizion(a, b):
+    """Function for cheking statistics result on division 0. If True - print =0 in result"""
+    return a / b * 100 if b else 0
+
 if __name__ == '__main__': #Main processing#
     for m in file:
         with open(os.getcwd()+'\/'+m, encoding='utf-8', newline='') as hcs_1:
            hcs_2 = csv.reader(hcs_1, delimiter=' ')
            for hcs in hcs_2:
                cur_row+=1
-               type_cache(hcs[3:4],hcs[10:11]);
-               hlsv7_dash(hcs[3:4],hcs[10:11]);
-               hlsv3(hcs[3:4],hcs[10:11]);
+               type_cache(hcs[3:4], hcs[10:11]);
+               hlsv7_dash(hcs[3:4], hcs[10:11]);
+               hlsv3(hcs[3:4], hcs[10:11]);
                end_time = datetime.now()
                if cur_row % 12345 == 0: #print pregress bar#
                    end_time = datetime.now()
                    print('\r', end='')
                    print(f'Processed/Total = {cur_row:,} / {total_rows:,}      Duration: {end_time - start_time}', end='')
+
+#Prepare final statistics for print#
+vod_total = zero_divizion(vod, live + vod + cuts)
+live_total = zero_divizion(live, live + vod + cuts)
+cuts_total = zero_divizion(cuts, live + vod + cuts)
+vod_hit_total = zero_divizion(hit_vod, hit_vod + miss_vod)
+live_hit_total = zero_divizion(hit_live, hit_live + miss_live)
+cuts_hit_total = zero_divizion(hit_cuts, hit_cuts + miss_cuts)
+vod_miss_total = zero_divizion(miss_vod, hit_vod + miss_vod)
+live_miss_total = zero_divizion(miss_live, hit_vod + miss_vod)
+cuts_miss_total = zero_divizion(miss_cuts, hit_vod + miss_vod)
+sec_hlsv3_vod_total = zero_divizion(sec_hlsv3_vod, sec_hlsv3_vod + sec_hlsv7_vod + sec_dash_vod)
+sec_hlsv3_cuts_total = zero_divizion(sec_hlsv3_cuts, sec_hlsv3_cuts + sec_hlsv7_cuts + sec_dash_cuts)
+sec_hlsv7_vod_total = zero_divizion(sec_hlsv7_vod, sec_hlsv3_vod + sec_hlsv7_vod + sec_dash_vod)
+sec_hlsv7_live_total = zero_divizion(sec_hlsv7_live, sec_hlsv7_live + sec_dash_live)
+sec_hlsv7_cuts_total = zero_divizion(sec_hlsv7_cuts, sec_hlsv3_cuts + sec_hlsv7_cuts + sec_dash_cuts)
+sec_dash_vod_total = zero_divizion(sec_dash_vod, sec_hlsv3_vod + sec_hlsv7_vod + sec_dash_vod)
+sec_dash_live_total = zero_divizion(sec_dash_live, sec_hlsv7_live + sec_dash_live)
+sec_dash_cuts_total = zero_divizion(sec_dash_cuts, sec_hlsv3_cuts + sec_hlsv7_cuts + sec_dash_cuts)
+sec_hlsv3_vod_hit_total = zero_divizion(sec_hlsv3_vod_hit, sec_hlsv3_vod_hit + sec_hlsv3_vod_miss)
+sec_hlsv3_vod_miss_total = zero_divizion(sec_hlsv3_vod_miss, sec_hlsv3_vod_hit + sec_hlsv3_vod_miss)
+sec_hlsv3_cuts_hit_total = zero_divizion(sec_hlsv3_cuts_hit, sec_hlsv3_cuts_hit + sec_hlsv3_cuts_miss)
+sec_hlsv3_cuts_miss_total = zero_divizion(sec_hlsv3_cuts_miss, sec_hlsv3_cuts_hit + sec_hlsv3_cuts_miss)
+sec_hlsv7_vod_hit_total = zero_divizion(sec_hlsv7_vod_hit, sec_hlsv7_vod_hit + sec_hlsv7_vod_miss)
+sec_hlsv7_vod_miss_total = zero_divizion(sec_hlsv7_vod_miss, sec_hlsv7_vod_hit + sec_hlsv7_vod_miss)
+sec_hlsv7_live_hit_total = zero_divizion(sec_hlsv7_live_hit, sec_hlsv7_live_hit + sec_hlsv7_live_miss)
+sec_hlsv7_live_miss_total = zero_divizion(sec_hlsv7_live_miss, sec_hlsv7_live_hit + sec_hlsv7_live_miss)
+sec_hlsv7_cuts_hit_total = zero_divizion(sec_hlsv7_cuts_hit, sec_hlsv7_cuts_hit + sec_hlsv7_cuts_miss)
+sec_hlsv7_cuts_miss_total = zero_divizion(sec_hlsv7_cuts_miss, sec_hlsv7_cuts_hit + sec_hlsv7_cuts_miss)
+sec_dash_vod_hit_total = zero_divizion(sec_dash_vod_hit, sec_dash_vod_hit + sec_dash_vod_miss)
+sec_dash_vod_miss_total = zero_divizion(sec_dash_vod_miss, sec_dash_vod_hit + sec_dash_vod_miss)
+sec_dash_live_hit_total = zero_divizion(sec_dash_live_hit, sec_dash_live_hit + sec_dash_live_miss)
+sec_dash_live_miss_total = zero_divizion(sec_dash_live_miss, sec_dash_live_hit + sec_dash_live_miss)
+sec_dash_cuts_hit_total = zero_divizion(sec_dash_cuts_hit, sec_dash_cuts_hit + sec_dash_cuts_miss)
+sec_dash_cuts_miss_total = zero_divizion(sec_dash_cuts_miss, sec_dash_cuts_hit + sec_dash_cuts_miss)
+
+
+#Print result#
 print()
 print()
 print('1.   % between VOD/LIVE/CU  (all requests)')
 print()
-print('%14s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('VOD =', (vod / (live + vod + cuts) * 100), '%', 'Live =', (live / (live + vod + cuts) * 100), '%', 'CU =', (cuts / (live + vod + cuts) * 100), '%'))
+print('%14s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('VOD =', vod_total, '%', 'Live =', live_total, '%', 'CU =', cuts_total, '%'))
 print()
 print('2.  % between HIT/MISS for VOD/LIVE/CU  (all requests)')
 print()
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', (hit_vod / (hit_vod + miss_vod) * 100), '%', 'Live =', (hit_live / (hit_live + miss_live) * 100), '%', 'CU =', (hit_cuts / (hit_cuts + miss_cuts) * 100), '%'))
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', (miss_vod / (hit_vod + miss_vod) * 100), '%', 'Live =', (miss_live / (hit_live + miss_live) * 100), '%', 'CU =', (miss_cuts / (hit_cuts + miss_cuts) * 100), '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', vod_hit_total, '%', 'Live =', live_hit_total, '%', 'CU =', cuts_hit_total, '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', vod_miss_total, '%', 'Live =', live_miss_total, '%', 'CU =', cuts_miss_total, '%'))
 print()
 #print('3.  % between HLSv7/HLSv3/Dash of VOD/LIVE/CU  (all requests)')
 #print()
@@ -168,21 +208,21 @@ print()
 #print()
 print('3.  % of PlayBack Duration. (HLS chunk = 6sec, Dash chunk=2sec) between HLSv7/HLSv3/Dash of VOD/LIVE/CU  (only ts|m4v|m4a requests)')
 print()
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLSv3','VOD =', (sec_hlsv3_vod / (sec_hlsv3_vod+sec_hlsv7_vod + sec_dash_vod) * 100), '%', 'Live =', 0, '%', 'CU =', (sec_hlsv3_cuts / (sec_hlsv3_cuts+sec_hlsv7_cuts + sec_dash_cuts) * 100), '%'))
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLSv7','VOD =', (sec_hlsv7_vod / (sec_hlsv3_vod+sec_hlsv7_vod + sec_dash_vod) * 100), '%', 'Live =', (sec_hlsv7_live / (sec_hlsv7_live + sec_dash_live) * 100), '%', 'CU =', (sec_hlsv7_cuts / (sec_hlsv3_cuts+sec_hlsv7_cuts + sec_dash_cuts) * 100), '%'))
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('DASH','VOD =', (sec_dash_vod / (sec_hlsv3_vod+sec_hlsv7_vod + sec_dash_vod) * 100), '%', 'Live =', (sec_dash_live / (sec_hlsv7_live + sec_dash_live) * 100), '%', 'CU =', (sec_dash_cuts / (sec_hlsv3_cuts+sec_hlsv7_cuts + sec_dash_cuts) * 100), '%'))
+print('%5s %8s %5.1f %-3s %8s %5s %0s %8s %5.1f %0s' % ('HLSv3','VOD =', sec_hlsv3_vod_total, '%', 'Live =', 'NULL', '%', 'CU =', sec_hlsv3_cuts_total, '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HLSv7','VOD =', sec_hlsv7_vod_total, '%', 'Live =', sec_hlsv7_live_total, '%', 'CU =', sec_hlsv7_cuts_total, '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('DASH','VOD =', sec_dash_vod_total, '%', 'Live =', sec_dash_live_total, '%', 'CU =', sec_dash_cuts_total, '%'))
 print()
 print('4.  % of HIT/MISS for HLSv7/HLSv3/Dash of VOD/LIVE/CU  (only ts|m4v|m4a requests)')
 print()
 print('%5s' % ('HLSv3'))
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', (sec_hlsv3_vod_hit / (sec_hlsv3_vod_hit+sec_hlsv3_vod_miss) * 100), '%', 'Live =', 0, '%', 'CU =', (sec_hlsv3_cuts_hit / (sec_hlsv3_cuts_hit+sec_hlsv3_cuts_miss) * 100), '%'))
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', (sec_hlsv3_vod_miss / (sec_hlsv3_vod_hit+sec_hlsv3_vod_miss) * 100), '%', 'Live =', 0, '%', 'CU =', (sec_hlsv3_cuts_miss / (sec_hlsv3_cuts_hit+sec_hlsv3_cuts_miss) * 100), '%'))
+print('%5s %8s %5.1f %-3s %8s %5s %0s %8s %5.1f %0s' % ('HIT','VOD =', sec_hlsv3_vod_hit_total, '%', 'Live =', 'NULL', '%', 'CU =', sec_hlsv3_cuts_hit_total, '%'))
+print('%5s %8s %5.1f %-3s %8s %5s %0s %8s %5.1f %0s' % ('MISS','VOD =', sec_hlsv3_vod_miss_total, '%', 'Live =', 'NULL', '%', 'CU =', sec_hlsv3_cuts_miss_total, '%'))
 print()
 print('%5s' % ('HLSv7'))
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', (sec_hlsv7_vod_hit / (sec_hlsv7_vod_hit+sec_hlsv7_vod_miss) * 100), '%', 'Live =', (sec_hlsv7_live_hit / (sec_hlsv7_live_hit+sec_hlsv7_live_miss) * 100), '%', 'CU =', (sec_hlsv7_cuts_hit / (sec_hlsv7_cuts_hit+sec_hlsv7_cuts_miss) * 100), '%'))
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', (sec_hlsv7_vod_miss / (sec_hlsv7_vod_hit+sec_hlsv7_vod_miss) * 100), '%', 'Live =', (sec_hlsv7_live_miss / (sec_hlsv7_live_hit+sec_hlsv7_live_miss) * 100), '%', 'CU =', (sec_hlsv7_cuts_miss / (sec_hlsv7_cuts_hit+sec_hlsv7_cuts_miss) * 100), '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', sec_hlsv7_vod_hit_total, '%', 'Live =', sec_hlsv7_live_hit_total, '%', 'CU =', sec_hlsv7_cuts_hit_total, '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', sec_hlsv7_vod_miss_total, '%', 'Live =', sec_hlsv7_live_miss_total, '%', 'CU =', sec_hlsv7_cuts_miss_total, '%'))
 print()
 print('%5s' % ('DASH'))
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', (sec_dash_vod_hit / (sec_dash_vod_hit+sec_dash_vod_miss) * 100), '%', 'Live =', (sec_dash_live_hit / (sec_dash_live_hit+sec_dash_live_miss) * 100), '%', 'CU =', (sec_dash_cuts_hit / (sec_dash_cuts_hit+sec_dash_cuts_miss) * 100), '%'))
-print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', (sec_dash_vod_miss / (sec_dash_vod_hit+sec_dash_vod_miss) * 100), '%', 'Live =', (sec_dash_live_miss / (sec_dash_live_hit+sec_dash_live_miss) * 100), '%', 'CU =', (sec_dash_cuts_miss / (sec_dash_cuts_hit+sec_dash_cuts_miss) * 100), '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', sec_dash_vod_hit_total, '%', 'Live =', sec_dash_live_hit_total, '%', 'CU =', sec_dash_cuts_hit_total, '%'))
+print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', sec_dash_vod_miss_total, '%', 'Live =', sec_dash_live_miss_total, '%', 'CU =', sec_dash_cuts_miss_total, '%'))
 print()
