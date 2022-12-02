@@ -4,7 +4,6 @@ import sys
 import csv
 import os
 import time
-import locale
 from datetime import datetime
 
 start_time=datetime.now()
@@ -21,7 +20,8 @@ sec_hlsv7_vod_miss = 0; sec_dash_vod_miss = 0; sec_hlsv7_live_miss = 0
 sec_dash_live_hit = 0; sec_hlsv7_cuts_hit = 0; sec_dash_cuts_hit = 0
 sec_dash_live_miss = 0; sec_hlsv7_cuts_miss = 0; sec_dash_cuts_miss = 0
 
-file = sys.argv[1:] #Import arguments like files for next processing#
+#Import arguments like files for next processing
+file = sys.argv[1:]
 
 for z in file: #Counting how many rows totaly we will have for this process#
     total_rows = total_rows + sum(1 for file in open(os.getcwd() + '\/' + z, 'r'))
@@ -157,11 +157,11 @@ vod_total = zero_divizion(vod, live + vod + cuts)
 live_total = zero_divizion(live, live + vod + cuts)
 cuts_total = zero_divizion(cuts, live + vod + cuts)
 vod_hit_total = zero_divizion(hit_vod, hit_vod + miss_vod)
-live_hit_total = zero_divizion(hit_live, hit_live + miss_live)
-cuts_hit_total = zero_divizion(hit_cuts, hit_cuts + miss_cuts)
 vod_miss_total = zero_divizion(miss_vod, hit_vod + miss_vod)
-live_miss_total = zero_divizion(miss_live, hit_vod + miss_vod)
-cuts_miss_total = zero_divizion(miss_cuts, hit_vod + miss_vod)
+live_hit_total = zero_divizion(hit_live, hit_live + miss_live)
+live_miss_total = zero_divizion(miss_live, hit_live + miss_live)
+cuts_hit_total = zero_divizion(hit_cuts, hit_cuts + miss_cuts)
+cuts_miss_total = zero_divizion(miss_cuts, hit_cuts + miss_cuts)
 sec_hlsv3_vod_total = zero_divizion(sec_hlsv3_vod, sec_hlsv3_vod + sec_hlsv7_vod + sec_dash_vod)
 sec_hlsv3_cuts_total = zero_divizion(sec_hlsv3_cuts, sec_hlsv3_cuts + sec_hlsv7_cuts + sec_dash_cuts)
 sec_hlsv7_vod_total = zero_divizion(sec_hlsv7_vod, sec_hlsv3_vod + sec_hlsv7_vod + sec_dash_vod)
