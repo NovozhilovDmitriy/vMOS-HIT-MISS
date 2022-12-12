@@ -1,5 +1,6 @@
 #!/home/uniagent/agent_plugins/OMAgent/modules/python/bin/python
 
+"""
 #  Script for count vMOS on MTS Video project. Analyze HCS access.log for count requests with different Video profiles.
 #  For Dash used current request count (because one chunk duration 2 seconds
 #  For HLSv7 use request*3 because one chunk duration 6 seconds
@@ -9,6 +10,7 @@
 #  Processing status you can control by progress bar "Processed/Total = 345,660 / 352,202"
 #  Don't focus that Processed rows will never match Total rows - it's just progress bar issue, not final result of vMOS
 #  Script provided by Novozhilov Dmitriy (+7 923 733 0029)
+"""
 
 import sys
 import csv
@@ -59,19 +61,14 @@ total_vmos_hlsv7_vod = 0
 total_vmos_hlsv7_vod_hit = 0
 total_vmos_hlsv7_vod_miss = 0
 
-file = sys.argv[1:]
-
-for z in file:  # Counting how many rows totaly we will have for this process#
-    total_rows = total_rows + sum(1 for file in open(os.getcwd() + '\/' + z, 'r'))
-    print('\r', end='')
-    end_time = datetime.now()
-    print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')
-
+"""
 #  Description for dict of lists:
 #  'count' - total rows with profile 'quality'
 #  'count_hit_miss' - [dash_live_hit,dash_live_miss,dash_cuts_hit,dash_cuts_miss,dash_vod_hit,dash_vod_miss
 #  hlsv7_live_hit,hlsv7_live_miss,hlsv7_cuts_hit,hlsv7_cuts_miss,hlsv7_vod_hit,hlsv7_vod_miss]
 #  'live_cuts_vod' - count of [dash_live, dash_cuts, dash_vod, hlsv7_live, hlsv7_cuts, hlsv7_vod]
+"""
+
 qa_lab = [
     dict(quality="LV_Dyn_HD_1080_4HP_8000", qa="HD", score=5.0, count=0,
          count_hit_miss=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], live_cuts_vod=[0, 0, 0, 0, 0, 0]),
@@ -153,6 +150,14 @@ qa_lab = [
          live_cuts_vod=[0, 0, 0, 0, 0, 0])
 ]
 
+def total_r():
+    global total_rows
+    for z in file:  # Counting how many rows totaly we will have for this process#
+        total_rows = total_rows + sum(1 for file in open(os.getcwd() + '\/' + z, 'r'))
+        print('\r', end='')
+        end_time = datetime.now()
+        print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')
+
 
 def search_qa(j):
     """Function for counting Total POP vmos quality from logs,
@@ -226,7 +231,10 @@ def zero_divizion(a, b):
     return a / b if b else 0
 
 
+file = sys.argv[1:]
+
 if __name__ == '__main__':  # Main processing
+    total_r()
     for m in file:
         with open(os.getcwd() + '\/' + m, encoding='utf-8', newline='') as hcs_1:
             hcs_2 = csv.reader(hcs_1, delimiter=' ')
@@ -369,7 +377,8 @@ print(f'\033[1m Total vMOS = \033[1;31m {zero_divizion(total_site_vmos, count_ro
 print()
 print('2.  vMOS DASH by HIT/MISS for VOD/LIVE/CU  (m4v requests)')
 print()
-print(f'\033[1m Dash  vMOS = \033[1;32m {zero_divizion((zero_divizion(total_vmos_vod, count_vmos_vod_rows) + zero_divizion(total_vmos_live, count_vmos_live_rows) + zero_divizion(total_vmos_cuts, count_vmos_cuts_rows)), 3):.3f} \033[0m')
+print(
+    f'\033[1m Dash  vMOS = \033[1;32m {zero_divizion((zero_divizion(total_vmos_vod, count_vmos_vod_rows) + zero_divizion(total_vmos_live, count_vmos_live_rows) + zero_divizion(total_vmos_cuts, count_vmos_cuts_rows)), 3):.3f} \033[0m')
 print()
 print('%5s %8s %5.3f %8s %5.3f %8s %5.3f' % (
     'DASH', 'VOD =', zero_divizion(total_vmos_vod, count_vmos_vod_rows), 'Live =',
@@ -385,11 +394,13 @@ print('%5s %8s %5.3f %8s %5.3f %8s %5.3f' % (
 print()
 print('3.  vMOS HLSv7 by HIT/MISS for VOD/LIVE/CU  (m4v requests)')
 print()
-print(f'\033[1m HLSv7 vMOS = \033[1;32m {zero_divizion((zero_divizion(total_vmos_hlsv7_vod, count_vmos_hlsv7_vod_rows) + zero_divizion(total_vmos_hlsv7_live, count_vmos_hlsv7_live_rows) + zero_divizion(total_vmos_hlsv7_cuts, count_vmos_hlsv7_cuts_rows)), 3):.3f} \033[0m')
+print(
+    f'\033[1m HLSv7 vMOS = \033[1;32m {zero_divizion((zero_divizion(total_vmos_hlsv7_vod, count_vmos_hlsv7_vod_rows) + zero_divizion(total_vmos_hlsv7_live, count_vmos_hlsv7_live_rows) + zero_divizion(total_vmos_hlsv7_cuts, count_vmos_hlsv7_cuts_rows)), 3):.3f} \033[0m')
 print()
 print('%5s %8s %5.3f %8s %5.3f %8s %5.3f' % (
     'HLSv7', 'VOD =', zero_divizion(total_vmos_hlsv7_vod, count_vmos_hlsv7_vod_rows), 'Live =',
-    zero_divizion(total_vmos_hlsv7_live, count_vmos_hlsv7_live_rows), 'CU =', zero_divizion(total_vmos_hlsv7_cuts, count_vmos_hlsv7_cuts_rows)))
+    zero_divizion(total_vmos_hlsv7_live, count_vmos_hlsv7_live_rows), 'CU =',
+    zero_divizion(total_vmos_hlsv7_cuts, count_vmos_hlsv7_cuts_rows)))
 print('%5s %8s %5.3f %8s %5.3f %8s %5.3f' % (
     'HIT', 'VOD =', zero_divizion(total_vmos_hlsv7_vod_hit, count_vmos_hlsv7_vod_hit_rows), 'Live =',
     zero_divizion(total_vmos_hlsv7_live_hit, count_vmos_hlsv7_live_hit_rows), 'CU =',

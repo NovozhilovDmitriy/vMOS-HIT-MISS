@@ -9,8 +9,8 @@ start_time=datetime.now()
 
 #file = sys.argv[1:]
 #file = {"test3.log", "test4.log"}
-file = {"hcs.log", "hcs1.log", "hcs2.log", "hcs3.log"}
-#file = {"test.log", "test2.log"}
+#file = {"hcs.log", "hcs1.log", "hcs2.log", "hcs3.log"}
+file = {"hcs.log"}
 
 # def test(j,vod,live):
 #     """Function for count request percentage of VOD/Live/CU and HIT/MISS percentage of this types"""
