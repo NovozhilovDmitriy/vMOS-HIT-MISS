@@ -10,9 +10,9 @@ start_time=datetime.now()
 
 #file = sys.argv[1:]
 #file = {"test3.log", "test4.log"}
-#file = {"hcs.log", "hcs1.log", "hcs2.log", "hcs3.log"}
+file = {"hcs.log", "hcs1.log", "hcs2.log", "hcs3.log"}
 #file = {"hcs.log"}
-file = {"hcs.log", "hcs1.log"}
+#file = {"hcs.log", "hcs1.log"}
 
 vod_live_cuts = {}
 i = "vod_hit"
