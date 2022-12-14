@@ -155,7 +155,7 @@ qa_lab = [
 async def total_r(m):
     global total_rows
  #   for m in file:  # Counting how many rows totaly we will have for this process#
-    total_rows = total_rows + sum(1 for file in open(os.getcwd() + '\/' + m, 'r'))
+    total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\/' + m, 'r'))
     print('\r', end='')
     end_time = datetime.now()
     print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')

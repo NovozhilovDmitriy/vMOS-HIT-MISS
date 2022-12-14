@@ -24,7 +24,7 @@ sec_dash_live_miss = 0; sec_hlsv7_cuts_miss = 0; sec_dash_cuts_miss = 0
 file = sys.argv[1:]
 
 for z in file: #Counting how many rows totaly we will have for this process#
-    total_rows = total_rows + sum(1 for file in open(os.getcwd() + '\/' + z, 'r'))
+    total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\/' + z, 'r'))
     print('\r',end='')
     end_time = datetime.now()
     print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')
@@ -133,26 +133,28 @@ def hlsv3 (i,j):
                 else:
                     sec_hlsv3_vod_miss += 1
 
+
 def zero_divizion(a, b):
     """Function for cheking statistics result on division 0. If True - print =0 in result"""
     return a / b * 100 if b else 0
 
-if __name__ == '__main__': #Main processing#
+
+if __name__ == '__main__':  # Main processing
     for m in file:
         with open(os.getcwd()+'\/'+m, encoding='utf-8', newline='') as hcs_1:
            hcs_2 = csv.reader(hcs_1, delimiter=' ')
            for hcs in hcs_2:
                cur_row+=1
-               type_cache(hcs[3:4], hcs[10:11]);
-               hlsv7_dash(hcs[3:4], hcs[10:11]);
-               hlsv3(hcs[3:4], hcs[10:11]);
+               type_cache(hcs[3:4], hcs[10:11])
+               hlsv7_dash(hcs[3:4], hcs[10:11])
+               hlsv3(hcs[3:4], hcs[10:11])
                end_time = datetime.now()
-               if cur_row % 12345 == 0: #print pregress bar#
+               if cur_row % 12345 == 0:  # print progress bar
                    end_time = datetime.now()
                    print('\r', end='')
                    print(f'Processed/Total = {cur_row:,} / {total_rows:,}      Duration: {end_time - start_time}', end='')
 
-#Prepare final statistics for print#
+#  Prepare final statistics for print
 vod_total = zero_divizion(vod, live + vod + cuts)
 live_total = zero_divizion(live, live + vod + cuts)
 cuts_total = zero_divizion(cuts, live + vod + cuts)

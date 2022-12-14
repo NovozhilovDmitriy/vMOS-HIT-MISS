@@ -152,8 +152,8 @@ qa_lab = [
 
 def total_r():
     global total_rows
-    for z in file:  # Counting how many rows totaly we will have for this process#
-        total_rows = total_rows + sum(1 for file in open(os.getcwd() + '\/' + z, 'r'))
+    for z in file:  # Counting how many rows totally we will have for this process#
+        total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\/' + z, 'r'))
         print('\r', end='')
         end_time = datetime.now()
         print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')

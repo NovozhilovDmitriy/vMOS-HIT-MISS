@@ -1,38 +1,73 @@
 import csv
 import os
-from multiprocessing import Process, Queue, Value, Manager, Pool
+import sys
+from multiprocessing import Manager, Pool
 from datetime import datetime
 
 start_time=datetime.now()
 
-#file = sys.argv[1:]
+cur_row = 0; total_rows = 0
+
+file = sys.argv[1:]
 #file = {"test3.log", "test4.log"}
-file = {"hcs.log", "hcs1.log", "hcs2.log", "hcs3.log"}
+#file = {"hcs.log", "hcs1.log", "hcs2.log", "hcs3.log"}
 #file = {"hcs.log"}
 
-def argument(m, a):
+#  Import arguments like files for next processing
+file = sys.argv[1:]
+
+
+def total_r():
+    global total_rows
+    for m in file:  # Counting how many rows totally we will have for this process#
+       total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\/' + m, 'r'))
+       print('\r', end='')
+       end_time = datetime.now()
+       print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')
+       print()
+
+
+def test(j,a_m, a_h, c_r):
+    """Function for count request percentage of VOD/Live/CU and HIT/MISS percentage of this types"""
+    global a_temp_m; global a_temp_h; global cur_row_p
+    for j in j:
+         if j.endswith('MISS'):
+             a_m = a_m + 1
+             c_r = c_r + 1
+         elif j.endswith('HIT'):
+             a_h = a_h + 1
+             c_r = c_r + 1
+    a_temp_m = a_m
+    a_temp_h = a_h
+    cur_row_p = c_r
+
+def argument(m, a, c, t):
      proc_num = os.getpid()
+     global a_temp_m; global a_temp_h; global cur_row_p
      a_temp_m = 0
      a_temp_h = 0
-     print(f'Processor = {proc_num} , Log file = {m}  , INPUT_1  : a[vod_hit] = ', a["vod_hit"], ', a[vod_miss] = ', a["vod_miss"], ' a_temp_h  = ', a_temp_h, ', a_temp_m  = ', a_temp_m)
+     cur_row_p = 0
+     # end_time = datetime.now()
+     # print(f'Processor = {proc_num} , Log file = {m}  , INPUT_1  : a[vod_hit] = ', a["vod_hit"], ', a[vod_miss] = ', a["vod_miss"], ' a_temp_h  = ', a_temp_h, ', a_temp_m  = ', a_temp_m, '      Duration: {}'.format(end_time - start_time))
      with open(os.getcwd() + '\/' + m, newline='') as hcs_1:
          hcs_2 = csv.reader(hcs_1, delimiter=' ')
-         for j in hcs_2:
-             if j[3].find('MISS') != -1:
-                 a_temp_m = a_temp_m + 1
-             elif j[3].find('HIT') != -1:
-                 a_temp_h = a_temp_h + 1
-     print(f'Log file = {m}', f'a[vod_hit] = ', a["vod_hit"],f', a_temp_h=', a_temp_h, f', a[vod_miss] =', a["vod_miss"], f', a_temp_m=', a_temp_m)
-     print(f'Log file = {m}', 'INPUT_2  : a[vod_hit] = ', a["vod_hit"], ', a[vod_miss] = ', a["vod_miss"])
-     print(f'Log file = {m}', 'OUTPUT : a_temp_h  = ', a_temp_h, ', a_temp_m  = ', a_temp_m)
+         for hcs in hcs_2:
+             test(hcs[3:4], a_temp_m, a_temp_h, cur_row_p)
+     # end_time = datetime.now()
+     # print(f'Processor = {proc_num} , Log file = {m}', f'After loop a_temp_h=', a_temp_h, f', a_temp_m=', a_temp_m, '      Duration: {}'.format(end_time - start_time))
+     # print(f'Processor = {proc_num} , Log file = {m}', 'INPUT_2  : a[vod_hit] = ', a["vod_hit"], ', a[vod_miss] = ', a["vod_miss"], '      Duration: {}'.format(end_time - start_time))
+     # print(f'Processor = {proc_num} , Log file = {m}', 'OUTPUT : a_temp_h  = ', a_temp_h, ', a_temp_m  = ', a_temp_m, '      Duration: {}'.format(end_time - start_time))
      a["vod_miss"].append(a_temp_m)
      a["vod_hit"].append(a_temp_h)
+     c.append(cur_row_p)
      end_time = datetime.now()
-     print(f'Log file = {m} ', ' Processor = ', proc_num, ', vod_live_cuts =', a["vod_hit"], a["vod_miss"], '      Duration: {}'.format(end_time - start_time))
-     print()
+     #print(f'Processor = {proc_num} , Final def, Log file = {m} ', ' Processor = ', proc_num, sum(c), ', vod_live_cuts =', a["vod_hit"], a["vod_miss"], '      Duration: {}'.format(end_time - start_time))
+     print('\r', end='')
+     print(f'Processed/Total = {sum(c):,} / {t:,}      Duration: {end_time - start_time}', end='')
 
 
 if __name__ == '__main__':
+    total_r()
     procs = []
     manager = Manager()
     vod_live_cuts = manager.dict()
@@ -41,12 +76,14 @@ if __name__ == '__main__':
     cpu = 1
     vod_live_cuts[i] = manager.list()
     vod_live_cuts[ii] = manager.list()
+    cur_row = manager.list()
     with Pool(cpu) as pool:
         tasks = []
         for m in file:
-            task = pool.apply_async(argument, args=(m, vod_live_cuts))
+            task = pool.apply_async(argument, args=(m, vod_live_cuts, cur_row, total_rows))
             tasks.append(task)
         for task in tasks:
             task.get()
     end_time = datetime.now()
-    print('                                                update - ', vod_live_cuts["vod_hit"], vod_live_cuts["vod_miss"], '       Duration: {}'.format(end_time - start_time))
+    print()
+    print('                                                update - ', sum(vod_live_cuts["vod_hit"]), sum(vod_live_cuts["vod_miss"]), '       Duration: {}'.format(end_time - start_time))
