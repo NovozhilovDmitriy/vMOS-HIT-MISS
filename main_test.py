@@ -2,9 +2,9 @@
 
 """
 #  Script for count vMOS on MTS Video project. Analyze HCS access.log for count requests with different Video profiles.
-#  For Dash used current request count (because one chunk duration 2 seconds
+#  For Dash used current request count (because one chunk duration 2 seconds)
 #  For HLSv7 use request*3 because one chunk duration 6 seconds
-#  Script don't use muliprocessing feature and 20 millions rows could process about 10-13 minutes.
+#  Script don't use multiprocessing feature and 20 millions rows could process about 10-13 minutes.
 #  For executing script use command "/home/sshusr/main_test.py logfile.log"
 #  For argument "logfile.log" could use wildcard like "logfile*.log" and all files will be processed one by one
 #  Processing status you can control by progress bar "Processed/Total = 345,660 / 352,202"

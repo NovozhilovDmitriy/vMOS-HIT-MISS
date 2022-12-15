@@ -62,7 +62,7 @@ def argument(m, a, n):
 
 
 if __name__ == '__main__':
-    # manager = Manager()
+    # m = Manager()
     vod_live_cuts = dict()
     i = "vod_hit"
     ii = "vod_miss"
@@ -70,8 +70,8 @@ if __name__ == '__main__':
     n = 1
     vod_live_cuts[i] = [0] * cpu
     vod_live_cuts[ii] = [0] * cpu
-    #vod_live_cuts[i] = manager.list([0] * cpu)
-    #vod_live_cuts[ii] = manager.list([0] * cpu)
+    #vod_live_cuts[i] = m.list([0] * cpu)
+    #vod_live_cuts[ii] = m.list([0] * cpu)
     for m in file:
         proc = threading.Thread(target=argument, args=(m, vod_live_cuts, (n-1)))
         proc.start()

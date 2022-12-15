@@ -9,9 +9,6 @@ start_time=datetime.now()
 cur_row = 0; total_rows = 0
 
 file = sys.argv[1:]
-#file = {"test3.log", "test4.log"}
-#file = {"hcs.log", "hcs1.log", "hcs2.log", "hcs3.log"}
-#file = {"hcs.log"}
 
 #  Import arguments like files for next processing
 file = sys.argv[1:]
@@ -24,7 +21,7 @@ def total_r():
        print('\r', end='')
        end_time = datetime.now()
        print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')
-       print()
+    print()
 
 
 def test(j,a_m, a_h, c_r):
