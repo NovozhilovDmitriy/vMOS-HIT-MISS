@@ -67,8 +67,41 @@ total_vmos_hlsv7_vod_hit = 0
 total_vmos_hlsv7_vod_miss = 0
 
 #  Import arguments like files for next processing
-file = sys.argv[1:]
+#file = sys.argv[1:]
+if len(sys.argv) < 5:
+    print("\033[1;31m!!!Error!!! \033[0m")
+    print("Please set number of CPU what you will use for process script and logs file by example: /home/sshusr/main_mp_prod.py \033[1;31m--cpu 2 --file *.log\033[0m")
+    print("Where --cpu or --c set number of CPU, --file or --f hcs log files for analyze")
+    sys.exit (1)
 
+if (sys.argv[1] == "--cpu" or sys.argv[1] == "--c"):
+    if sys.argv[2] < '1':
+        print("\033[1;31m!!!Error!!! \033[0m")
+        print("CPU number can't be less then \033[1;31m1\033[0m. Please don't choose CPU more than HW server capacity. It could overload system.")
+        sys.exit ()
+    else:
+        cpu_a = int(sys.argv[2])
+else:
+    print("\033[1;31m!!!Error!!! \033[0m")
+    print("Please set number of CPU what you will use for process script by : /home/sshusr/main_mp_prod.py \033[1;31m--cpu 2\033[0m --file *.log")
+    print("Where --cpu or --c set number of CPU, --file or --f hcs log files for analyze")
+    sys.exit (1)
+
+if (sys.argv[3] == "--file" or sys.argv[3] == "--f"):
+    file = sys.argv[4]
+    if file.endswith('log'):
+        file = sys.argv[4:]
+
+    else:
+        print("\033[1;31m!!!Error!!! \033[0m")
+        print("Log files incorrect extension. Should be \033[1;31m*.log\033[0m")
+        sys.exit (1)
+else:
+    print("\033[1;31m!!!Error!!! \033[0m")
+    print("Please set log file for analyze by this way: /home/sshusr/main_mp_prod.py --cpu 2 \033[1;31m--file XXX.log\033[0m")
+    print("Where --cpu or --c set number of CPU, --file or --f hcs log files for analyze.")
+    print("You can choose multiply file by this way: --file access*.log")
+    sys.exit (1)
 
 def total_r():
     global total_rows
@@ -78,18 +111,6 @@ def total_r():
        end_time = datetime.now()
        print(f'Total rows = {total_rows:,}      Duration of total rows counting: {end_time - start_time}', end='')
     print()
-
-
-def search_qa(j,qa):
-    """Function for counting Total POP vmos quality from logs,
-    include only m4v and for HLSv7*3, because 1*hlsv7 chunk = 3* dash chunk"""
-    for z in qa:
-        if j[0].find(z["quality"]) != -1:
-            if j[0].find('PolicyMode') != -1:
-                z["count"] += 3
-            else:
-                z["count"] += 1
-            return
 
 
 def search_all(i, j, qa):
@@ -344,7 +365,7 @@ if __name__ == '__main__':
         m.dict(quality="video_SD_AB_1", qa="SD", score=1.0, count=m.list(), count_hit_miss=m.list(),
                live_cuts_vod=m.list())
     ]
-    cpu = 1
+    cpu = cpu_a
     cur_row = m.list()
     with Pool(cpu) as pool:
         tasks = []
