@@ -6,11 +6,11 @@
 #  For HLSv7 use request*3 because one chunk duration 6 seconds
 #  Script use Python 3.0. The path to this version of Python need to configure here at the beginning of script like:
 #  /home/uniagent/agent_plugins/OMAgent/modules/python/bin/python
-#  For executing script use command "/home/sshusr/main_test.py logfile.log"
+#  For executing script use command "/home/sshusr/main_test.py --c 1 --f logfile.log"
 #  For argument "logfile.log" could use wildcard like "logfile*.log" and all files will be processed one by one
-#  Script use multiprocessing feature. To start script on several CPU need to add argument like "-c X"
-#  where X - CPU number. Example: "/home/sshusr/main_test.py -c 4 logfile*.log"
-#  Please focus on Server I/O performance. More CPU will occupation more I/O resourses.
+#  Script use multiprocessing feature. To start script on several CPU need to add argument like "--c X"
+#  where X - CPU number. Example: "/home/sshusr/main_test.py --c 4 --f logfile*.log"
+#  Please focus on Server I/O performance. More CPU will occupation more I/O resources.
 #  Processing status you can control by progress bar "Processed/Total = 352,202 / 352,202"
 #  Progress bug will update by files (after one log file finished -> result updated
 #  Script provided by Novozhilov Dmitriy (+7 923 733 0029)
@@ -65,6 +65,16 @@ count_vmos_hlsv7_vod_miss_rows = 0
 total_vmos_hlsv7_vod = 0
 total_vmos_hlsv7_vod_hit = 0
 total_vmos_hlsv7_vod_miss = 0
+
+count_all = 0
+vod = 0; live = 0; cuts = 0; hit_vod = 0; miss_vod = 0; hit_live = 0; miss_live = 0; hit_cuts = 0; miss_cuts = 0
+
+sec_hlsv7_vod = 0; sec_dash_vod = 0; sec_hlsv7_live = 0
+sec_dash_live = 0; sec_hlsv7_cuts = 0; sec_dash_cuts = 0
+sec_hlsv7_vod_hit = 0; sec_dash_vod_hit = 0; sec_hlsv7_live_hit = 0
+sec_hlsv7_vod_miss = 0; sec_dash_vod_miss = 0; sec_hlsv7_live_miss = 0
+sec_dash_live_hit = 0; sec_hlsv7_cuts_hit = 0; sec_dash_cuts_hit = 0
+sec_dash_live_miss = 0; sec_hlsv7_cuts_miss = 0; sec_dash_cuts_miss = 0
 
 #  Import arguments like files for next processing
 #file = sys.argv[1:]
@@ -285,6 +295,10 @@ if __name__ == '__main__':
     total_r()
     procs = []
     m = Manager()
+    """ 'count' - total rows with profile 'quality' """
+    """ 'count_hit_miss' - [dash_live_hit,dash_live_miss,dash_cuts_hit,dash_cuts_miss,dash_vod_hit,dash_vod_miss """
+    """ hlsv7_live_hit,hlsv7_live_miss,hlsv7_cuts_hit,hlsv7_cuts_miss,hlsv7_vod_hit,hlsv7_vod_miss] """
+    """ 'live_cuts_vod' - count of [dash_live, dash_cuts, dash_vod, hlsv7_live, hlsv7_cuts, hlsv7_vod] """
     qa_lab = [
         m.dict(quality="LV_Dyn_HD_1080_4HP_8000", qa="HD", score=5.0, count=m.list(),
                count_hit_miss=m.list(), live_cuts_vod=m.list()),
@@ -505,6 +519,69 @@ if __name__ == '__main__':
             total_vmos_live_hit = total_vmos_live_hit + profile_vmos_live_hit
             total_vmos_live_miss = total_vmos_live_miss + profile_vmos_live_miss
 
+    for i in final_qa:
+        vod = vod + i["live_cuts_vod"][2] + i["live_cuts_vod"][5]
+        live = live + i["live_cuts_vod"][0] + i["live_cuts_vod"][3]
+        cuts = cuts + i["live_cuts_vod"][1] + i["live_cuts_vod"][4]
+        count_all = count_all + i["count"]
+
+        hit_vod = hit_vod + i["count_hit_miss"][4] + i["count_hit_miss"][10]
+        miss_vod = miss_vod + i["count_hit_miss"][5] + i["count_hit_miss"][11]
+        hit_live = hit_live + i["count_hit_miss"][0] + i["count_hit_miss"][6]
+        miss_live = miss_live + i["count_hit_miss"][1] + i["count_hit_miss"][7]
+        hit_cuts = hit_cuts + i["count_hit_miss"][2] + i["count_hit_miss"][8]
+        miss_cuts = miss_cuts + i["count_hit_miss"][3] + i["count_hit_miss"][9]
+
+        sec_hlsv7_vod = sec_hlsv7_vod + i["live_cuts_vod"][5]
+        sec_hlsv7_live = sec_hlsv7_live + i["live_cuts_vod"][3]
+        sec_hlsv7_cuts = sec_hlsv7_cuts + i["live_cuts_vod"][4]
+        sec_dash_vod = sec_dash_vod + i["live_cuts_vod"][2]
+        sec_dash_live = sec_dash_live + i["live_cuts_vod"][0]
+        sec_dash_cuts = sec_dash_cuts + i["live_cuts_vod"][1]
+
+        sec_hlsv7_vod_hit = sec_hlsv7_vod_hit + i["count_hit_miss"][10]
+        sec_hlsv7_vod_miss = sec_hlsv7_vod_miss + i["count_hit_miss"][11]
+        sec_hlsv7_live_hit = sec_hlsv7_live_hit + i["count_hit_miss"][6]
+        sec_hlsv7_live_miss = sec_hlsv7_live_miss + i["count_hit_miss"][7]
+        sec_hlsv7_cuts_hit = sec_hlsv7_cuts_hit + i["count_hit_miss"][8]
+        sec_hlsv7_cuts_miss = sec_hlsv7_cuts_miss + i["count_hit_miss"][9]
+        sec_dash_vod_hit = sec_dash_vod_hit + i["count_hit_miss"][4]
+        sec_dash_vod_miss = sec_dash_vod_miss + i["count_hit_miss"][5]
+        sec_dash_live_hit = sec_dash_live_hit + i["count_hit_miss"][0]
+        sec_dash_live_miss = sec_dash_vod_miss + i["count_hit_miss"][1]
+        sec_dash_cuts_hit = sec_dash_cuts_hit + i["count_hit_miss"][2]
+        sec_dash_cuts_miss = sec_dash_cuts_miss + i["count_hit_miss"][3]
+
+    vod_total = zero_divizion(vod, count_all) * 100
+    live_total = zero_divizion(live, count_all) * 100
+    cuts_total = zero_divizion(cuts, count_all) * 100
+    vod_hit_total = zero_divizion(hit_vod, vod) * 100
+    vod_miss_total = zero_divizion(miss_vod, vod) * 100
+    live_hit_total = zero_divizion(hit_live, live) * 100
+    live_miss_total = zero_divizion(miss_live, live) * 100
+    cuts_hit_total = zero_divizion(hit_cuts, cuts) * 100
+    cuts_miss_total = zero_divizion(miss_cuts, cuts) * 100
+
+    sec_hlsv7_vod_total = zero_divizion(sec_hlsv7_vod, vod) * 100
+    sec_hlsv7_live_total = zero_divizion(sec_hlsv7_live, live) * 100
+    sec_hlsv7_cuts_total = zero_divizion(sec_hlsv7_cuts, cuts) * 100
+    sec_dash_vod_total = zero_divizion(sec_dash_vod, vod) * 100
+    sec_dash_live_total = zero_divizion(sec_dash_live, live) * 100
+    sec_dash_cuts_total = zero_divizion(sec_dash_cuts, cuts) * 100
+
+    sec_hlsv7_vod_hit_total = zero_divizion(sec_hlsv7_vod_hit, sec_hlsv7_vod_hit + sec_hlsv7_vod_miss) * 100
+    sec_hlsv7_vod_miss_total = zero_divizion(sec_hlsv7_vod_miss, sec_hlsv7_vod_hit + sec_hlsv7_vod_miss) * 100
+    sec_hlsv7_live_hit_total = zero_divizion(sec_hlsv7_live_hit, sec_hlsv7_live_hit + sec_hlsv7_live_miss) * 100
+    sec_hlsv7_live_miss_total = zero_divizion(sec_hlsv7_live_miss, sec_hlsv7_live_hit + sec_hlsv7_live_miss) * 100
+    sec_hlsv7_cuts_hit_total = zero_divizion(sec_hlsv7_cuts_hit, sec_hlsv7_cuts_hit + sec_hlsv7_cuts_miss) * 100
+    sec_hlsv7_cuts_miss_total = zero_divizion(sec_hlsv7_cuts_miss, sec_hlsv7_cuts_hit + sec_hlsv7_cuts_miss) * 100
+    sec_dash_vod_hit_total = zero_divizion(sec_dash_vod_hit, sec_dash_vod_hit + sec_dash_vod_miss) * 100
+    sec_dash_vod_miss_total = zero_divizion(sec_dash_vod_miss, sec_dash_vod_hit + sec_dash_vod_miss) * 100
+    sec_dash_live_hit_total = zero_divizion(sec_dash_live_hit, sec_dash_live_hit + sec_dash_live_miss) * 100
+    sec_dash_live_miss_total = zero_divizion(sec_dash_live_miss, sec_dash_live_hit + sec_dash_live_miss) * 100
+    sec_dash_cuts_hit_total = zero_divizion(sec_dash_cuts_hit, sec_dash_cuts_hit + sec_dash_cuts_miss) * 100
+    sec_dash_cuts_miss_total = zero_divizion(sec_dash_cuts_miss, sec_dash_cuts_hit + sec_dash_cuts_miss) * 100
+
     # Print result
     print()
     print()
@@ -548,5 +625,44 @@ if __name__ == '__main__':
         zero_divizion(total_vmos_hlsv7_live_miss, count_vmos_hlsv7_live_miss_rows), 'CU =',
         zero_divizion(total_vmos_hlsv7_cuts_miss, count_vmos_hlsv7_cuts_miss_rows)))
     print()
+    print('4.   % of requests between VOD/LIVE/CU  (only m4v requests)')
+    print()
+    print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
+    '%', 'VOD =', vod_total, 'Live =', live_total, 'CU =', cuts_total))
+    print()
+    print('5.  % between HIT/MISS for VOD/LIVE/CU  (only m4v requests)')
+    print()
+    print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
+    'HIT', 'VOD =', vod_hit_total, 'Live =', live_hit_total, 'CU =', cuts_hit_total))
+    print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
+    'MISS', 'VOD =', vod_miss_total, 'Live =', live_miss_total, 'CU =', cuts_miss_total))
+    print()
+    print(
+        '6.  % of PlayBack Duration. (HLS chunk = 6sec, Dash chunk=2sec) between HLSv7/Dash of VOD/LIVE/CU  (only m4v requests)')
+    print()
+    print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
+    'HLSv7', 'VOD =', sec_hlsv7_vod_total, 'Live =', sec_hlsv7_live_total, 'CU =', sec_hlsv7_cuts_total))
+    print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
+    'DASH', 'VOD =', sec_dash_vod_total, 'Live =', sec_dash_live_total, 'CU =', sec_dash_cuts_total))
+    print()
+    print('7.  % of HIT/MISS for HLSv7/Dash of VOD/LIVE/CU  (only m4v requests)')
+    print()
+    print('%5s' % ('HLSv7'))
+    print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
+    'HIT', 'VOD =', sec_hlsv7_vod_hit_total, 'Live =', sec_hlsv7_live_hit_total, 'CU =',
+    sec_hlsv7_cuts_hit_total))
+    print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
+    'MISS', 'VOD =', sec_hlsv7_vod_miss_total, 'Live =', sec_hlsv7_live_miss_total, 'CU =',
+    sec_hlsv7_cuts_miss_total))
+    print()
+    print('%5s' % ('DASH'))
+    print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
+    'HIT', 'VOD =', sec_dash_vod_hit_total, 'Live =', sec_dash_live_hit_total, 'CU =',
+    sec_dash_cuts_hit_total))
+    print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
+    'MISS', 'VOD =', sec_dash_vod_miss_total, 'Live =', sec_dash_live_miss_total, 'CU =',
+    sec_dash_cuts_miss_total))
+    print()
+
     end_time = datetime.now()
     print('Total script Duration: {}'.format(end_time - start_time))
