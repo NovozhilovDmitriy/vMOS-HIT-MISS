@@ -58,7 +58,7 @@ def argument(m, a, c, t):
      a["vod_hit"].append(a_temp_h)
      c.append(cur_row_p)
      end_time = datetime.now()
-     #print(f'Processor = {proc_num} , Final def, Log file = {m} ', ' Processor = ', proc_num, sum(c), ', vod_live_cuts =', a["vod_hit"], a["vod_miss"], '      Duration: {}'.format(end_time - start_time))
+     print(f'Processor = {proc_num} , Final def, Log file = {m} ', ' Processor = ', proc_num, sum(c), ', vod_live_cuts =', a["vod_hit"], a["vod_miss"], '      Duration: {}'.format(end_time - start_time))
      print('\r', end='')
      print(f'Processed/Total = {sum(c):,} / {t:,}      Duration: {end_time - start_time}', end='')
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     vod_live_cuts = manager.dict()
     i = "vod_hit"
     ii = "vod_miss"
-    cpu = 1
+    cpu = 2
     vod_live_cuts[i] = manager.list()
     vod_live_cuts[ii] = manager.list()
     cur_row = manager.list()
