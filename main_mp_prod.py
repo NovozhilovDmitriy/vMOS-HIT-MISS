@@ -67,38 +67,37 @@ total_vmos_hlsv7_vod_hit = 0
 total_vmos_hlsv7_vod_miss = 0
 
 count_all = 0
-vod = 0;
-live = 0;
-cuts = 0;
-hit_vod = 0;
-miss_vod = 0;
-hit_live = 0;
-miss_live = 0;
-hit_cuts = 0;
+vod = 0
+live = 0
+cuts = 0
+hit_vod = 0
+miss_vod = 0
+hit_live = 0
+miss_live = 0
+hit_cuts = 0
 miss_cuts = 0
 
-sec_hlsv7_vod = 0;
-sec_dash_vod = 0;
+sec_hlsv7_vod = 0
+sec_dash_vod = 0
 sec_hlsv7_live = 0
-sec_dash_live = 0;
-sec_hlsv7_cuts = 0;
+sec_dash_live = 0
+sec_hlsv7_cuts = 0
 sec_dash_cuts = 0
-sec_hlsv7_vod_hit = 0;
-sec_dash_vod_hit = 0;
+sec_hlsv7_vod_hit = 0
+sec_dash_vod_hit = 0
 sec_hlsv7_live_hit = 0
-sec_hlsv7_vod_miss = 0;
-sec_dash_vod_miss = 0;
+sec_hlsv7_vod_miss = 0
+sec_dash_vod_miss = 0
 sec_hlsv7_live_miss = 0
-sec_dash_live_hit = 0;
-sec_hlsv7_cuts_hit = 0;
+sec_dash_live_hit = 0
+sec_hlsv7_cuts_hit = 0
 sec_dash_cuts_hit = 0
-sec_dash_live_miss = 0;
-sec_hlsv7_cuts_miss = 0;
+sec_dash_live_miss = 0
+sec_hlsv7_cuts_miss = 0
 sec_dash_cuts_miss = 0
 final_qa = {}
 
 #  Import arguments like files for next processing
-# file = sys.argv[1:]
 if len(sys.argv) < 5:
     print("\033[1;31m!!!Error!!! \033[0m")
     print(
@@ -140,8 +139,11 @@ else:
 
 
 def total_r():
+    """
+    Counting how many rows totally we will have for this process
+    """
     global total_rows
-    for m in file:  # Counting how many rows totally we will have for this process#
+    for m in file:
         total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\/' + m, 'r'))
         print('\r', end='')
         end_time = datetime.now()
@@ -150,11 +152,13 @@ def total_r():
 
 
 def search_all(i, j, qa):
-    """Function for counting quality (HIT/MISS) LIVE/CUTS/VOD from logs"""
-    """ 'count' - total rows with profile 'quality' """
-    """ 'count_hit_miss' - [dash_live_hit,dash_live_miss,dash_cuts_hit,dash_cuts_miss,dash_vod_hit,dash_vod_miss """
-    """ hlsv7_live_hit,hlsv7_live_miss,hlsv7_cuts_hit,hlsv7_cuts_miss,hlsv7_vod_hit,hlsv7_vod_miss] """
-    """ 'live_cuts_vod' - count of [dash_live, dash_cuts, dash_vod, hlsv7_live, hlsv7_cuts, hlsv7_vod] """
+    """
+    Function for counting quality (HIT/MISS) LIVE/CUTS/VOD from logs
+    'count' - total rows with profile 'quality'
+    'count_hit_miss' - [dash_live_hit,dash_live_miss,dash_cuts_hit,dash_cuts_miss,dash_vod_hit,dash_vod_miss
+    hlsv7_live_hit,hlsv7_live_miss,hlsv7_cuts_hit,hlsv7_cuts_miss,hlsv7_vod_hit,hlsv7_vod_miss]
+    'live_cuts_vod' - count of [dash_live, dash_cuts, dash_vod, hlsv7_live, hlsv7_cuts, hlsv7_vod]
+    """
     for z in qa:
         if j[0].find(z["quality"]) != -1:
             if j[0].find('servicetype=0') != -1:
@@ -211,7 +215,9 @@ def search_all(i, j, qa):
 
 
 def zero_divizion(a, b):
-    """Function for cheking statistics result on division 0. If True - print =0 in result"""
+    """
+    Function for checking statistics result on division 0. If True - print =0 in result
+    """
     return a / b if b else 0
 
 
@@ -320,10 +326,12 @@ def argument(m, a, c, t):
 
 
 if __name__ == '__main__':
-    #    """ 'count' - total rows with profile 'quality' """
-    #    """ 'count_hit_miss' - [dash_live_hit,dash_live_miss,dash_cuts_hit,dash_cuts_miss,dash_vod_hit,dash_vod_miss """
-    #    """ hlsv7_live_hit,hlsv7_live_miss,hlsv7_cuts_hit,hlsv7_cuts_miss,hlsv7_vod_hit,hlsv7_vod_miss] """
-    #    """ 'live_cuts_vod' - count of [dash_live, dash_cuts, dash_vod, hlsv7_live, hlsv7_cuts, hlsv7_vod] """
+    """ 
+    'count' - total rows with profile 'quality'
+    'count_hit_miss' - [dash_live_hit,dash_live_miss,dash_cuts_hit,dash_cuts_miss,dash_vod_hit,dash_vod_miss
+    hlsv7_live_hit,hlsv7_live_miss,hlsv7_cuts_hit,hlsv7_cuts_miss,hlsv7_vod_hit,hlsv7_vod_miss]
+    'live_cuts_vod' - count of [dash_live, dash_cuts, dash_vod, hlsv7_live, hlsv7_cuts, hlsv7_vod] 
+    """
     total_r()
     procs = []
     m = Manager()
@@ -411,17 +419,12 @@ if __name__ == '__main__':
     cur_row = m.list()
     with Pool(cpu) as pool:
         tasks = []
-        #print('cpu=', cpu)
-        #print('tasks=', tasks)
         for m in file:
             task = pool.apply_async(argument, args=(m, qa_lab, cur_row, total_rows))
             tasks.append(task)
-            #print('tasks2=', tasks)
         for task in tasks:
             task.get()
-            #print('task=', task)
     end_time = datetime.now()
-    # final_qa = {}
     for i in qa_lab:
         final_qa[i] = i
         final_qa[i]["count"] = sum(i["count"])
