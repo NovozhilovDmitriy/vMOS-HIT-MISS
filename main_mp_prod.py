@@ -101,26 +101,29 @@ final_qa = {}
 if len(sys.argv) < 5:
     print("\033[1;31m!!!Error!!! \033[0m")
     print(
-        "Please set number of CPU what you will use for process script and logs file by example: /home/sshusr/main_mp_prod.py \033[1;31m--cpu 2 --file *.log\033[0m")
+        "Please set number of CPU what you will use for process script and logs file by example: "
+        "/home/sshusr/main_mp_prod.py \033[1;31m--cpu 2 --file *.log\033[0m")
     print("Where --cpu or --c set number of CPU, --file or --f hcs log files for analyze")
     sys.exit(1)
 
-if (sys.argv[1] == "--cpu" or sys.argv[1] == "--c"):
+if sys.argv[1] == "--cpu" or sys.argv[1] == "--c":
     if sys.argv[2] < '1':
         print("\033[1;31m!!!Error!!! \033[0m")
         print(
-            "CPU number can't be less then \033[1;31m1\033[0m. Please don't choose CPU more than HW server capacity. It could overload system.")
+            "CPU number can't be less then \033[1;31m1\033[0m. Please don't choose CPU more than HW server capacity. "
+            "It could overload system.")
         sys.exit()
     else:
         cpu_a = int(sys.argv[2])
 else:
     print("\033[1;31m!!!Error!!! \033[0m")
     print(
-        "Please set number of CPU what you will use for process script by : /home/sshusr/main_mp_prod.py \033[1;31m--cpu 2\033[0m --file *.log")
+        "Please set number of CPU what you will use for process script by : /home/sshusr/main_mp_prod.py \033["
+        "1;31m--cpu 2\033[0m --file *.log")
     print("Where --cpu or --c set number of CPU, --file or --f hcs log files for analyze")
     sys.exit(1)
 
-if (sys.argv[3] == "--file" or sys.argv[3] == "--f"):
+if sys.argv[3] == "--file" or sys.argv[3] == "--f":
     file = sys.argv[4]
     if file.endswith('log'):
         file = sys.argv[4:]
@@ -132,7 +135,8 @@ if (sys.argv[3] == "--file" or sys.argv[3] == "--f"):
 else:
     print("\033[1;31m!!!Error!!! \033[0m")
     print(
-        "Please set log file for analyze by this way: /home/sshusr/main_mp_prod.py --cpu 2 \033[1;31m--file XXX.log\033[0m")
+        "Please set log file for analyze by this way: /home/sshusr/main_mp_prod.py --cpu 2 \033[1;31m--file "
+        "XXX.log\033[0m")
     print("Where --cpu or --c set number of CPU, --file or --f hcs log files for analyze.")
     print("You can choose multiply file by this way: --file access*.log")
     sys.exit(1)
@@ -336,10 +340,10 @@ if __name__ == '__main__':
     procs = []
     m = Manager()
     qa_lab = [
-        m.dict(quality="LV_Dyn_HD_1080_4HP_8000", qa="HD", score=5.0, count=m.list(),
-               count_hit_miss=m.list(), live_cuts_vod=m.list()),
-        m.dict(quality="LV_Dyn_HD_1080_4HP_5000", qa="HD", score=4.9, count=m.list(),
-               count_hit_miss=m.list(), live_cuts_vod=m.list()),
+        m.dict(quality="LV_Dyn_HD_1080_4HP_8000", qa="HD", score=5.0, count=m.list(), count_hit_miss=m.list(),
+               live_cuts_vod=m.list()),
+        m.dict(quality="LV_Dyn_HD_1080_4HP_5000", qa="HD", score=4.9, count=m.list(), count_hit_miss=m.list(),
+               live_cuts_vod=m.list()),
         m.dict(quality="LV_Dyn_HD_720_4HP_2500", qa="HD", score=4.2, count=m.list(),
                count_hit_miss=m.list(), live_cuts_vod=m.list()),
         m.dict(quality="LV_Dyn_HD_576_4HP_1400", qa="HD", score=3.5, count=m.list(),
@@ -472,7 +476,8 @@ if __name__ == '__main__':
             count_vmos_hlsv7_vod_miss_rows = count_vmos_hlsv7_vod_miss_rows + i['count_hit_miss'][
                 11]  # count how many MISS requests with live services
 
-            total_vmos_hlsv7_vod = total_vmos_hlsv7_vod + profile_vmos_hlsv7_vod  # count what is sum of vmos for full live
+            total_vmos_hlsv7_vod = total_vmos_hlsv7_vod + profile_vmos_hlsv7_vod  # count what is sum of vmos for
+            # full live
             total_vmos_hlsv7_vod_hit = total_vmos_hlsv7_vod_hit + profile_vmos_hlsv7_vod_hit
             total_vmos_hlsv7_vod_miss = total_vmos_hlsv7_vod_miss + profile_vmos_hlsv7_vod_miss
 
@@ -619,7 +624,7 @@ if __name__ == '__main__':
     # Print result
     print()
     print()
-    print('1.   Total vMOS for POP (m4v requests, exclude HLSv3, for HLSv7 multilply 3)')
+    print('1.   Total vMOS for POP (m4v requests, exclude HLSv3, for HLSv7 multiply 3)')
     print()
     print(f'\033[1m Total vMOS = \033[1;31m {zero_divizion(total_site_vmos, count_rows):.3f} \033[0m')
     print()
@@ -681,7 +686,7 @@ if __name__ == '__main__':
     print()
     print('7.  % of HIT/MISS for HLSv7/Dash of VOD/LIVE/CU  (only m4v requests)')
     print()
-    print('%5s' % ('HLSv7'))
+    print('%5s' % 'HLSv7')
     print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
         'HIT', 'VOD =', sec_hlsv7_vod_hit_total, 'Live =', sec_hlsv7_live_hit_total, 'CU =',
         sec_hlsv7_cuts_hit_total))
@@ -689,7 +694,7 @@ if __name__ == '__main__':
         'MISS', 'VOD =', sec_hlsv7_vod_miss_total, 'Live =', sec_hlsv7_live_miss_total, 'CU =',
         sec_hlsv7_cuts_miss_total))
     print()
-    print('%5s' % ('DASH'))
+    print('%5s' % 'DASH')
     print('%5s %8s %5.1f %8s %5.1f %8s %5.1f' % (
         'HIT', 'VOD =', sec_dash_vod_hit_total, 'Live =', sec_dash_live_hit_total, 'CU =',
         sec_dash_cuts_hit_total))
