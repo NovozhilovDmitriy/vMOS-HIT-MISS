@@ -26,9 +26,9 @@ You can update location from script:
 #!/home/uniagent/agent_plugins/OMAgent/modules/python/bin/python
 
 Also you need change this:
-sum(1 for line in open(os.getcwd() + '\/' + z, 'r')
+#sum(1 for line in open(os.getcwd() + '\/' + z, 'r')
 to 
-sum(1 for line in open(os.getcwd() + '\' + z, 'r')
+#sum(1 for line in open(os.getcwd() + '\' + z, 'r')
 
 in two places in each sript before execute.
 
