@@ -6,10 +6,10 @@
 #  For HLSv7 use request*3 because one chunk duration 6 seconds
 #  Script use Python 3.0. The path to this version of Python need to configure here at the beginning of script like:
 #  /home/uniagent/agent_plugins/OMAgent/modules/python/bin/python
-#  For executing script use command "/home/sshusr/main_test.py --c 1 --f logfile.log"
+#  For executing script use command "/home/sshusr/main_mp_prod.py --c 1 --f logfile.log"
 #  For argument "logfile.log" could use wildcard like "logfile*.log" and all files will be processed one by one
 #  Script use multiprocessing feature. To start script on several CPU need to add argument like "--c X"
-#  where X - CPU number. Example: "/home/sshusr/main_test.py --c 4 --f logfile*.log"
+#  where X - CPU number. Example: "/home/sshusr/main_mp_prod.py --c 4 --f logfile*.log"
 #  Please focus on Server I/O performance. More CPU will occupation more I/O resources.
 #  Processing status you can control by progress bar "Processed/Total = 352,202 / 352,202"
 #  Progress bar will update by files (after one log file finished -> result updated)

@@ -2,10 +2,10 @@
 
 """
 #  Script for count vMOS on MTS Video project. Analyze HCS access.log for count requests with different Video profiles.
-#  For Dash used current request count (because one chunk duration 2 seconds
+#  For Dash used current request count (because one chunk duration 2 seconds)
 #  For HLSv7 use request*3 because one chunk duration 6 seconds
-#  Script don't use muliprocessing feature and 20 millions rows could process about 10-13 minutes.
-#  For executing script use command "/home/sshusr/main_test.py logfile.log"
+#  Script don't use multiprocessing feature and 20 millions rows could process about 10-13 minutes.
+#  For executing script use command "/home/sshusr/NoUse_main_test.py logfile.log"
 #  For argument "logfile.log" could use wildcard like "logfile*.log" and all files will be processed one by one
 #  Processing status you can control by progress bar "Processed/Total = 345,660 / 352,202"
 #  Don't focus that Processed rows will never match Total rows - it's just progress bar issue, not final result of vMOS
@@ -15,8 +15,6 @@
 import sys
 import csv
 import os
-import asyncio
-import time
 from datetime import datetime
 
 start_time = datetime.now()
@@ -152,14 +150,13 @@ qa_lab = [
          live_cuts_vod=[0, 0, 0, 0, 0, 0])
 ]
 
-async def total_r(m):
+def total_r():
     global total_rows
- #   for m in file:  # Counting how many rows totaly we will have for this process#
-    total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\/' + m, 'r'))
-    print('\r', end='')
-    end_time = datetime.now()
-    print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')
-        #time.sleep(1)
+    for z in file:  # Counting how many rows totally we will have for this process#
+        total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\/' + z, 'r'))
+        print('\r', end='')
+        end_time = datetime.now()
+        print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')
 
 
 def search_qa(j):
@@ -234,38 +231,24 @@ def zero_divizion(a, b):
     return a / b if b else 0
 
 
-async def argument(m):
-    global cur_row; global total_rows
-#    for m in file:
-    with open(os.getcwd() + '\/' + m, encoding='utf-8', newline='') as hcs_1:
-        hcs_2 = csv.reader(hcs_1, delimiter=' ')
-        for hcs in hcs_2:
-            cur_row += 1
-            if hcs[10].find('.m4v') != -1:  # will analyze only m4v chunks by functions
-                search_qa(hcs[10:11])
-                search_all(hcs[3:4], hcs[10:11])
-            if cur_row % 12345 == 0:  # print progress bar
-                end_time = datetime.now()
-                print('\r', end='')
-                print(f'Processed/Total = {cur_row:,} / {total_rows:,}      Duration: {end_time - start_time}',
-                      end='')
-
-
-async def main():
-    tasks = [asyncio.create_task(argument(m)) for m in file]
-    await tasks
-
-
-async def main2():
-    tasks = [asyncio.create_task(total_r(m)) for m in file]
-    await asyncio.gather(*tasks)
-
 file = sys.argv[1:]
 
 if __name__ == '__main__':  # Main processing
-    asyncio.run(main2())
-    asyncio.run(main())
-
+    total_r()
+    for m in file:
+        with open(os.getcwd() + '\/' + m, encoding='utf-8', newline='') as hcs_1:
+            hcs_2 = csv.reader(hcs_1, delimiter=' ')
+            for hcs in hcs_2:
+                cur_row += 1
+                if hcs[10].find('.m4v') != -1:  # will analyze only m4v chunks by functions
+                    search_qa(hcs[10:11])
+                    search_all(hcs[3:4], hcs[10:11])
+                end_time = datetime.now()
+                if cur_row % 12345 == 0:  # print progress bar#
+                    end_time = datetime.now()
+                    print('\r', end='')
+                    print(f'Processed/Total = {cur_row:,} / {total_rows:,}      Duration: {end_time - start_time}',
+                          end='')
 
 for i in qa_lab:  # count total site vMOS
     if i["count"] > 0:
