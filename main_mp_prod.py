@@ -149,6 +149,8 @@ def total_r():
     global total_rows
     for m in file:
         total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\/' + m, 'r'))
+        #  For LINUX execute, please commit previous row and uncommit this
+        #  total_rows = total_rows + sum(1 for line in open(os.getcwd() + '/' + m, 'r'))
         print('\r', end='')
         end_time = datetime.now()
         print(f'Total rows = {total_rows:,}      Duration of total rows counting: {end_time - start_time}', end='')
@@ -311,6 +313,8 @@ def argument(m, a, c, t):
     ]
     cur_row_p = 0
     with open(os.getcwd() + '\/' + m, newline='') as hcs_1:
+    #  For LINUX execute, please commit previous row and uncommit this
+    #  with open(os.getcwd() + '/' + m, newline='') as hcs_1:
         hcs_2 = csv.reader(hcs_1, delimiter=' ')
         for hcs in hcs_2:
             cur_row_p += 1

@@ -26,7 +26,7 @@ file = sys.argv[1:]
 for z in file: #  Counting how many rows totaly we will have for this process#
     total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\/' + z, 'r'))
     #  For LINUX execute, please commit previous row and uncommit this
-    #  total_rows = total_rows + sum(1 for line in open(os.getcwd() + '\' + z, 'r'))
+    #  total_rows = total_rows + sum(1 for line in open(os.getcwd() + '/' + z, 'r'))
     print('\r', end='')
     end_time = datetime.now()
     print(f'Total rows = {total_rows:,}      Duration: {end_time - start_time}', end='')
@@ -145,7 +145,7 @@ if __name__ == '__main__':  # Main processing
     for m in file:
         with open(os.getcwd() + '\/' + m, encoding='utf-8', newline='') as hcs_1:
         #  For LINUX execute, please commit previous row and uncommit this
-        #  with open(os.getcwd()+'\'+m, encoding='utf-8', newline='') as hcs_1:
+        #  with open(os.getcwd()+'/'+m, encoding='utf-8', newline='') as hcs_1:
            hcs_2 = csv.reader(hcs_1, delimiter=' ')
            for hcs in hcs_2:
                cur_row+=1
