@@ -20,22 +20,22 @@ for m in file:
        for hcs in hcs_2:
             x+=1
             for i, j in zip(hcs[3:4], hcs[10:11]):
-                if j.find('servicetype=0')!=-1 and i.endswith('HIT'):
+                if j.find('servicetype=0')!=-1 and i[-3:] == 'HIT':
                    vod += 1
                    hit_vod+= 1
-                elif j.find('servicetype=0')!=-1 and i.endswith('MISS'):
+                elif j.find('servicetype=0')!=-1 and i[-4:] == 'MISS':
                    vod += 1
                    miss_vod += 1
-                elif j.find('servicetype=1')!=-1 and i.endswith('HIT'):
+                elif j.find('servicetype=1')!=-1 and i[-3:] == 'HIT':
                    live += 1
                    hit_live+=1
-                elif j.find('servicetype=1')!=-1 and i.endswith('MISS'):
+                elif j.find('servicetype=1')!=-1 and i[-4:] == 'MISS':
                    live += 1
                    miss_live += 1
-                elif j.find('servicetype=3')!=-1 and i.endswith('HIT'):
+                elif j.find('servicetype=3')!=-1 and i[-3:] == 'HIT':
                    cuts += 1
                    hit_cuts+=1
-                elif j.find('servicetype=3')!=-1 and i.endswith('MISS'):
+                elif j.find('servicetype=3')!=-1 and i[-4:] == 'MISS':
                    cuts += 1
                    miss_cuts += 1
 
@@ -82,3 +82,5 @@ print('3.  % between HIT/MISS for VOD/LIVE/CU')
 print()
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('HIT','VOD =', (hit_vod / (hit_vod + miss_vod) * 100), '%', 'Live =', (hit_live / (hit_live + miss_live) * 100), '%', 'CU =', (hit_cuts / (hit_cuts + miss_cuts) * 100), '%'))
 print('%5s %8s %5.1f %-3s %8s %5.1f %0s %8s %5.1f %0s' % ('MISS','VOD =', (miss_vod / (hit_vod + miss_vod) * 100), '%', 'Live =', (miss_live / (hit_live + miss_live) * 100), '%', 'CU =', (miss_cuts / (hit_cuts + miss_cuts) * 100), '%'))
+end_time = datetime.now()
+print('      Duration: {}'.format(end_time - start_time), end='')
