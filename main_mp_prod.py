@@ -171,7 +171,7 @@ def search_all(i, j, qa):
                 if j[0].find('PolicyMode') != -1:
                     z["live_cuts_vod"][5] += 3
                     z["count"] += 3
-                    if i[0].endswith('HIT'):
+                    if i[0][-3:] == 'HIT':
                         z["count_hit_miss"][10] += 1
                     else:
                         z["count_hit_miss"][11] += 1
@@ -179,7 +179,7 @@ def search_all(i, j, qa):
                 else:
                     z["live_cuts_vod"][2] += 1
                     z["count"] += 1
-                    if i[0].endswith('HIT'):
+                    if i[0][-3:] == 'HIT':
                         z["count_hit_miss"][4] += 1
                     else:
                         z["count_hit_miss"][5] += 1
@@ -188,7 +188,7 @@ def search_all(i, j, qa):
                 if j[0].find('PolicyMode') != -1:
                     z["live_cuts_vod"][3] += 3
                     z["count"] += 3
-                    if i[0].endswith('HIT'):
+                    if i[0][-3:] == 'HIT':
                         z["count_hit_miss"][6] += 1
                     else:
                         z["count_hit_miss"][7] += 1
@@ -196,7 +196,7 @@ def search_all(i, j, qa):
                 else:
                     z["live_cuts_vod"][0] += 1
                     z["count"] += 1
-                    if i[0].endswith('HIT'):
+                    if i[0][-3:] == 'HIT':
                         z["count_hit_miss"][0] += 1
                     else:
                         z["count_hit_miss"][1] += 1
@@ -205,7 +205,7 @@ def search_all(i, j, qa):
                 if j[0].find('PolicyMode') != -1:
                     z["live_cuts_vod"][4] += 3
                     z["count"] += 3
-                    if i[0].endswith('HIT'):
+                    if i[0][-3:] == 'HIT':
                         z["count_hit_miss"][8] += 1
                     else:
                         z["count_hit_miss"][9] += 1
@@ -213,7 +213,7 @@ def search_all(i, j, qa):
                 else:
                     z["live_cuts_vod"][1] += 1
                     z["count"] += 1
-                    if i[0].endswith('HIT'):
+                    if i[0][-3:] == 'HIT':
                         z["count_hit_miss"][2] += 1
                     else:
                         z["count_hit_miss"][3] += 1
