@@ -35,21 +35,21 @@ def type_cache (i,j):
     global vod; global live; global cuts; global hit_vod; global miss_vod; global hit_live; global miss_live; global hit_cuts; global miss_cuts
     for i, j in zip(i, j):
         if j.find('servicetype=0') != -1 or (j.find('.hls.ts') != -1 and j.find('TVOD') == -1):
-            if i.endswith('HIT'):
+            if i[-3:] == 'HIT':
                 vod += 1
                 hit_vod += 1
             else:
                 vod += 1
                 miss_vod += 1
         elif j.find('servicetype=1') != -1:
-            if i.endswith('HIT'):
+            if i[-3:] == 'HIT':
                 live += 1
                 hit_live += 1
             else:
                 live += 1
                 miss_live += 1
         elif (j.find('servicetype=3') != -1 or j.find('servicetype=2') != -1) or (j.find('.hls.ts') != -1 and j.find('TVOD') != -1):
-            if i.endswith('HIT'):
+            if i[-3:] == 'HIT':
                 cuts += 1
                 hit_cuts += 1
             else:
@@ -68,7 +68,7 @@ def hlsv7_dash (i,j):
                 hlsv7_vod += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_hlsv7_vod += 3
-                    if i.endswith('HIT'):
+                    if i[-3:] == 'HIT':
                         sec_hlsv7_vod_hit += 1
                     else:
                         sec_hlsv7_vod_miss += 1
@@ -76,7 +76,7 @@ def hlsv7_dash (i,j):
                 dash_vod += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_dash_vod += 1
-                    if i.endswith('HIT'):
+                    if i[-3:] == 'HIT':
                         sec_dash_vod_hit += 1
                     else:
                         sec_dash_vod_miss += 1
@@ -85,7 +85,7 @@ def hlsv7_dash (i,j):
                 hlsv7_live += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_hlsv7_live += 3
-                    if i.endswith('HIT'):
+                    if i[-3:] == 'HIT':
                         sec_hlsv7_live_hit += 1
                     else:
                         sec_hlsv7_live_miss += 1
@@ -93,7 +93,7 @@ def hlsv7_dash (i,j):
                 dash_live += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_dash_live += 1
-                    if i.endswith('HIT'):
+                    if i[-3:] == 'HIT':
                         sec_dash_live_hit += 1
                     else:
                         sec_dash_live_miss += 1
@@ -102,7 +102,7 @@ def hlsv7_dash (i,j):
                 hlsv7_cuts += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_hlsv7_cuts += 3
-                    if i.endswith('HIT'):
+                    if i[-3:] == 'HIT':
                         sec_hlsv7_cuts_hit += 1
                     else:
                         sec_hlsv7_cuts_miss += 1
@@ -110,7 +110,7 @@ def hlsv7_dash (i,j):
                 dash_cuts += 1
                 if (j.find('.m4v') != -1 or j.find('.m4a') != -1):
                     sec_dash_cuts += 1
-                    if i.endswith('HIT'):
+                    if i[-3:] == 'HIT':
                         sec_dash_cuts_hit += 1
                     else:
                         sec_dash_cuts_miss += 1
@@ -123,14 +123,14 @@ def hlsv3 (i,j):
             if j.find('TVOD') != -1:
                 hlsv3_cuts += 1
                 sec_hlsv3_cuts += 3
-                if i.endswith('HIT'):
+                if i[-3:] == 'HIT':
                     sec_hlsv3_cuts_hit += 1
                 else:
                     sec_hlsv3_cuts_miss += 1
             else:
                 hlsv3_vod += 1
                 sec_hlsv3_vod += 3
-                if i.endswith('HIT'):
+                if i[-3:] == 'HIT':
                     sec_hlsv3_vod_hit += 1
                 else:
                     sec_hlsv3_vod_miss += 1
